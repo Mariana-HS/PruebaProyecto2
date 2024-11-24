@@ -1,4 +1,4 @@
-package Tarjetas;
+package tarjetas;
 
 public class TarjetaCredito {
 }

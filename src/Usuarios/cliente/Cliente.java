@@ -1,22 +1,24 @@
-package Usuarios.cliente;
+package usuarios.cliente;
 
-import Usuarios.Usuarios;
+import resourses.Rol;
+import usuarios.Usuarios;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class Cliente extends Usuarios {
-    public LocalDateTime fechaRegistro;
+    public LocalDate fechaRegistro;
 
-    public Cliente(String nombre, String apellido, String curp, String RFC, String direccion, LocalDateTime fechaRegistro) {
-        super(nombre, apellido, curp, RFC, direccion);
+    public Cliente(String id,String nombre, String apellido, String curp, String RFC, String direccion, LocalDate fechaRegistro) {
+        super(id,nombre, apellido, curp, RFC, direccion, Rol.CLIENTE);
         this.fechaRegistro = fechaRegistro;
     }
 
-    public LocalDateTime getFechaRegistro() {
+    public LocalDate getFechaRegistro() {
         return fechaRegistro;
     }
 
-    public void setFechaRegistro(LocalDateTime fechaRegistro) {
+    public void setFechaRegistro(LocalDate fechaRegistro) {
         this.fechaRegistro = fechaRegistro;
     }
 }
