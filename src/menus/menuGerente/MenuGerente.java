@@ -1,9 +1,9 @@
 package menus.menuGerente;
 
-import banco.Banco;
+import Banco.Banco;
 import menus.menuCliente.MenuCliente;
-import usuarios.cliente.Cliente;
-import usuarios.gerente.Gerente;
+import Usuarios.cliente.Cliente;
+import Usuarios.gerente.Gerente;
 
 import java.time.LocalDate;
 import java.util.Scanner;
@@ -66,8 +66,11 @@ public class MenuGerente {
                     // Generar RFC automáticamente
                     String rfcCliente = banco.generarRFCDesdeCURP(curpCliente);
 
-                    Cliente cliente = new Cliente(id, nombre, apellidos, curpCliente,rfcCliente,direccionCliente,fechaNacimiento);
-                    banco.registrarCliente(id, nombre,apellidos,curpCliente,rfcCliente,direccionCliente,fechaNacimiento);
+                    System.out.println("Ingresa el saldo inicial de débito:");
+                    double saldoInicialDebito = scanner.nextDouble();
+
+                    Cliente cliente = new Cliente(id, nombre, apellidos, curpCliente,rfcCliente,direccionCliente,fechaNacimiento,saldoInicialDebito);
+                    banco.registrarCliente(id, nombre,apellidos,curpCliente,rfcCliente,direccionCliente,fechaNacimiento,saldoInicialDebito);
 
                     System.out.println("Registro del cliente exitoso!");
 

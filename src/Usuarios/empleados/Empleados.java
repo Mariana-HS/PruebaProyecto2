@@ -1,16 +1,14 @@
-package usuarios.empleados;
+package Usuarios.empleados;
 
 import resourses.Rol;
-import usuarios.Usuarios;
+import Usuarios.Usuarios;
 
 public class Empleados extends Usuarios {
-    public double salario;
-    public  String contrasena;
+    private double salario;
 
-    public Empleados(String id,String nombre, String apellido, String curp, String RFC, String direccion, double salario, String contrasena) {
-        super(id,nombre, apellido, curp, RFC, direccion, Rol.EMPLEADO);
+    public Empleados(String id, String nombre, String apellido, String curp, String RFC, String direccion, double salario, String usuario, String contrasena) {
+        super(id, nombre, apellido, curp, RFC, direccion, Rol.EMPLEADO);
         this.salario = salario;
-        this.contrasena = contrasena;
     }
 
     public double getSalario() {

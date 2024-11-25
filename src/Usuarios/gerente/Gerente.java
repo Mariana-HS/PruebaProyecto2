@@ -1,16 +1,14 @@
-package usuarios.gerente;
+package Usuarios.gerente;
 
 import resourses.Rol;
-import usuarios.Usuarios;
+import Usuarios.Usuarios;
 
 public class Gerente extends Usuarios {
-    public double salario;
-    public  String contrasena;
+    private double salario;
 
-    public Gerente(String id,String nombre, String apellido, String curp, String RFC, String direccion, double salario, String contrasena) {
-        super(id,nombre, apellido, curp, RFC, direccion, Rol.GERENTE);
+    public Gerente(String id, String nombre, String apellido, String curp, String RFC, String direccion, double salario, String usuario, String contrasena) {
+        super(id, nombre, apellido, curp, RFC, direccion, Rol.GERENTE);
         this.salario = salario;
-        this.contrasena = contrasena;
     }
 
     public double getSalario() {

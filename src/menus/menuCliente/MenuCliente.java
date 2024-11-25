@@ -1,6 +1,6 @@
 package menus.menuCliente;
 
-import usuarios.cliente.Cliente;
+import Usuarios.cliente.Cliente;
 
 import java.util.Scanner;
 

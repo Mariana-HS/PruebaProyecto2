@@ -1,7 +1,7 @@
-package banco;
+package Banco;
 
-import usuarios.cliente.Cliente;
-
+import Usuarios.cliente.Cliente;
+import Usuarios.Usuarios;
 import java.io.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -112,14 +112,42 @@ public class Banco {
             return (List<Cliente>) s.readObject();
         }
     }
-    public static void registrarCliente(String id,String nombre, String apellido, String curp, String RFC, String direccion, LocalDate fechaRegistro) {
+    public static void registrarCliente(String id,String nombre, String apellido, String curp, String RFC, String direccion, LocalDate fechaRegistro,double saldoInicialDebito) {
         for(Cliente p : cliente) {
             if(p.getNombre().equals(nombre) && p.getCurp() == curp) {
                 System.out.println("Usuario existente. No se puede registrar.");
                 return;
             }
         }
-        cliente.add(new Cliente(id,nombre,apellido,curp, RFC,direccion,fechaRegistro));
+        cliente.add(new Cliente(id,nombre,apellido,curp, RFC,direccion,fechaRegistro,saldoInicialDebito));
         System.out.println("Persona agregada exitosamente.");
     }
+
+    // Lista y métodos para manejar usuarios
+    private static List<Usuarios> usuariosRegistrados = new ArrayList<>();
+
+    // Metodo para registrar un usuario
+    public static void registrarUsuario(Usuarios usuario) { usuariosRegistrados.add(usuario); }
+
+    // Metodo para validar el inicio de sesion
+    public Usuarios validarInicioDeSesion(String usuario, String contrasenia) throws InicioSesionException {
+        for (Usuarios u : usuariosRegistrados) {
+            if (u.getUsuario().equals(usuario) && u.getContrasenia().equals(contrasenia)) {
+                return u; } } throw new InicioSesionException("Usuario o contraseña incorrectos."); }
+
+    // Metodo para guardar usuarios en archivo
+    public static void guardarUsuarios() throws IOException {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("usuarios.dat"))) {
+            oos.writeObject(usuariosRegistrados); } }
+
+    //Metodo para cargar usuarios desde archivo
+    public static void cargarUsuarios() throws IOException, ClassNotFoundException {
+        File archivo = new File("usuarios.dat"); if (!archivo.exists()) {
+            usuariosRegistrados = new ArrayList<>(); return; }
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(archivo))) {
+            usuariosRegistrados = (List<Usuarios>) ois.readObject(); } }
+
+
+    public class InicioSesionException extends Exception { public InicioSesionException(String mensaje) { super(mensaje); } }
 }
+

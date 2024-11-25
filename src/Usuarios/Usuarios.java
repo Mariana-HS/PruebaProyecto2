@@ -1,27 +1,30 @@
-package usuarios;
+package Usuarios;
 
 import resourses.Rol;
 
 public class Usuarios {
-    String idUsuario;
+    public String idUsuario;
     public String nombre;
     public String apellido;
     public String curp;
     public String RFC;
     public String direccion;
+    public Rol rol;
+    public String contrasenia;
+    public String Usuario;
 
-    Rol rol;
-//Constructor
-    public Usuarios(String idUsuario,String nombre, String apellido, String curp, String RFC, String direccion, Rol rol) {
+    public Usuarios(String idUsuario, String nombre, String apellido, String curp, String RFC, String direccion, Rol rol) {
         this.idUsuario = idUsuario;
         this.nombre = nombre;
         this.apellido = apellido;
         this.curp = curp;
         this.RFC = RFC;
         this.direccion = direccion;
-        this.rol=rol;
+        this.rol = rol;
+        this.contrasenia=contrasenia;
+        this.Usuario= Usuario;
     }
-    //Getters y Setters
+
     public String getNombre() {
         return nombre;
     }
@@ -43,8 +46,15 @@ public class Usuarios {
     }
 
     public Rol getRol() {
-
         return rol;
+    }
+
+    public String getContrasenia() {
+        return contrasenia;
+    }
+
+    public String getUsuario() {
+        return Usuario;
     }
 
     public void setNombre(String nombre) {
@@ -68,7 +78,6 @@ public class Usuarios {
     }
 
     public void setRol(Rol rol) {
-
-        this.rol = rol;}
-
+        this.rol = rol;
+    }
 }

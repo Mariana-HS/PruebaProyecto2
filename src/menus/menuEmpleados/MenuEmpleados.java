@@ -1,6 +1,6 @@
 package menus.menuEmpleados;
 
-import usuarios.empleados.Empleados;
+import Usuarios.empleados.Empleados;
 
 import java.util.Scanner;
 
