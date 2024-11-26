@@ -1,19 +1,19 @@
 package menus.menuGeneral;
 
-import Banco.Banco;
+import banco.Banco;
 import menus.menuEmpleados.MenuEmpleados;
 import resourses.Rol;
-import Usuarios.Usuarios;
-import Usuarios.cliente.Cliente;
-import Usuarios.empleados.Empleados;
-import Usuarios.gerente.Gerente;
+import usuarios.Usuarios;
+import usuarios.cliente.Cliente;
+import usuarios.empleados.Empleados;
+import usuarios.gerente.Gerente;
 import menus.menuCliente.MenuCliente;
 import menus.menuGerente.MenuGerente;
 
 import java.io.IOException;
 import java.util.Scanner;
 
-public class menu {
+public class Menu {
     private Scanner scanner = new Scanner(System.in);
     private MenuGerente menuGerente = new MenuGerente();
     private MenuCliente menuCliente = new MenuCliente();
@@ -56,7 +56,7 @@ public class menu {
                 }
                 return;
 
-        } catch(Banco.Banco.InicioSesionException e){
+        } catch(Banco.InicioSesionException e){
             intentosUsuario = mostrarErrorInicioSesion(intentosUsuario, e.getMessage());
         }
     }

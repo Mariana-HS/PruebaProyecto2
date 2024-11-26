@@ -1,17 +1,16 @@
-package Banco;
+package banco;
 
-import Usuarios.cliente.Cliente;
-import Usuarios.Usuarios;
+import tarjetas.TarjetaDebito;
+import usuarios.cliente.Cliente;
+import usuarios.Usuarios;
 import java.io.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Banco {
+    Random random = new Random();
 
     //Generar id cliente
     LocalDateTime fecha = LocalDateTime.now();
@@ -98,6 +97,39 @@ public class Banco {
         String rfc = apellidoPaterno + apellidoMaterno + primerNombre + fechaNacimiento + sexo + estado;
 
         return rfc;
+    }
+
+    // Métodos Relacionados con Tarjeta de Debito
+    public String generarNumeroTarjeta(){
+        int primeraMitad = random.nextInt(1,99999999);
+        int segundaMitad = random.nextInt(1,99999999);
+        String numeroTarjeta = (Integer.toString(primeraMitad) + Integer.toString(segundaMitad));
+        return numeroTarjeta;
+    }
+
+    public int cvv(){
+        int cvv = random.nextInt(1,999);
+        return cvv;
+    }
+
+    public LocalDate fechaRegistro(){
+        LocalDate fechaActual = LocalDate.now();
+        int year = fechaActual.getYear();
+        int month = fechaActual.getMonthValue();
+        int day = fechaActual.getDayOfMonth();
+        LocalDate fecha = LocalDate.of(year, month, day);
+        return fecha;
+    }
+
+    public LocalDate fechaVencimiento(){
+        fechaRegistro();
+        int year = fechaRegistro().getYear() + 5;
+        LocalDate fechaVencimiento = fechaRegistro().plusYears(year);
+        return fechaVencimiento;
+    }
+
+    public boolean validarNumeroDeTarjeta(TarjetaDebito tarjeta){
+        for(tarjeta :)
     }
 
     //Registrar Cliente

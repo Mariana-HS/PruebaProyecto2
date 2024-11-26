@@ -1,9 +1,9 @@
 package menus.menuGerente;
 
-import Banco.Banco;
+import banco.Banco;
 import menus.menuCliente.MenuCliente;
-import Usuarios.cliente.Cliente;
-import Usuarios.gerente.Gerente;
+import usuarios.cliente.Cliente;
+import usuarios.gerente.Gerente;
 
 import java.time.LocalDate;
 import java.util.Scanner;

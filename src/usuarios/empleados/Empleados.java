@@ -1,7 +1,7 @@
-package Usuarios.empleados;
+package usuarios.empleados;
 
 import resourses.Rol;
-import Usuarios.Usuarios;
+import usuarios.Usuarios;
 
 public class Empleados extends Usuarios {
     private double salario;

@@ -1,19 +1,21 @@
-package Usuarios.cliente;
-import Tarjetas.TarjetaCredito;
-import Tarjetas.TarjetaDebito;
+package usuarios.cliente;
+import banco.Banco;
+import tarjetas.TarjetaCredito;
+import tarjetas.TarjetaDebito;
 import resourses.Rol;
-import Usuarios.Usuarios;
+import usuarios.Usuarios;
 import java.time.LocalDate;
 
 public class Cliente extends Usuarios {
+    Banco banco = new Banco();
     public LocalDate fechaRegistro;
     public TarjetaDebito tarjetaDebito;
     public TarjetaCredito tarjetaCredito;
 
-    public Cliente(String id, String nombre, String apellido, String curp, String RFC, String direccion, LocalDate fechaRegistro, double saldoInicialDebito) {
+    public Cliente(String id, String nombre, String apellido, String curp, String RFC, String direccion, LocalDate fechaRegistro, double saldo) {
         super(id, nombre, apellido, curp, RFC, direccion, Rol.CLIENTE);
         this.fechaRegistro = fechaRegistro;
-        this.tarjetaDebito = new TarjetaDebito(saldoInicialDebito); }
+        this.tarjetaDebito = new TarjetaDebito(saldo, banco.generarNumeroTarjeta(), ); }
 
     public LocalDate getFechaRegistro() { return fechaRegistro; }
     public void setFechaRegistro(LocalDate fechaRegistro) { this.fechaRegistro = fechaRegistro; }
