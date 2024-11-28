@@ -91,25 +91,9 @@ public class MenuGerente {
                 case 7:
                     break;
                 case 8:
-                    break;
-                case 9:
-                    break;
-
-                case 10:
-                    break;
-
-                case 11:
-                    break;
-
-                case 12:
-                    break;
-                case 13:
-                    break;
-                case 14:
-                    break;
-                case 15:
                     System.out.println("Saliendo del menu...");
                     return;
+
                 default:
                     System.out.println("Opción no válida. Por favor, elige nuevamente.");
             }

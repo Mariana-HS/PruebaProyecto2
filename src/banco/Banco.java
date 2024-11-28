@@ -11,6 +11,8 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class Banco {
     Random random = new Random();
+    ArrayList<TarjetaDebito> tarjetasDebito = new ArrayList<>();
+    File tarjetasDebitoArchivo = new File("tarjertasDebito.dat");
 
     //Generar id cliente
     LocalDateTime fecha = LocalDateTime.now();
@@ -128,10 +130,52 @@ public class Banco {
         return fechaVencimiento;
     }
 
-    public boolean validarNumeroDeTarjeta(TarjetaDebito tarjeta){
-        for(tarjeta :)
-    }
+   public void agregarTarjetaDebito(TarjetaDebito tarjetaDebito){
+        tarjetasDebito.add(tarjetaDebito);
+   }
 
+   public boolean validarExistenciaNumeroTarjeta(String numeroTarjeta){
+        for(TarjetaDebito tarjetaDebito: tarjetasDebito){
+            if (tarjetaDebito.getNumeroTarjeta().equals(numeroTarjeta)){
+                return false;
+            }
+        }
+        return true;
+   }
+
+   public boolean validarExistenciaCVV(int cvv){
+        for (TarjetaDebito tarjetaDebito: tarjetasDebito){
+            if (tarjetaDebito.getCvv() == cvv){
+                return false;
+            }
+        }
+        return true;
+   }
+
+   public TarjetaDebito crearTarjetaDebito(){
+        String numeroTarjeta = generarNumeroTarjeta();
+        int cvv = cvv();
+        LocalDate fechaRegistro = fechaRegistro();
+        LocalDate fechaVencimiento = fechaVencimiento();
+        while (!validarExistenciaNumeroTarjeta(numeroTarjeta) || !validarExistenciaCVV(cvv)) {
+            numeroTarjeta = generarNumeroTarjeta();
+            cvv = cvv();
+        }
+        TarjetaDebito tarjetaDebito = new TarjetaDebito(0,numeroTarjeta,fechaRegistro,cvv,fechaVencimiento);
+        agregarTarjetaDebito(tarjetaDebito);
+        return tarjetaDebito;
+   }
+
+   public void historialMovimientosTarjetaDeDebito(TarjetaDebito tarjetaDebito){
+       LocalDateTime fechaMovimiento = LocalDateTime.now();
+       tarjetaDebito.getMovimientos().add(fechaMovimiento);
+   }
+
+   public void obtenerUltimoMovimiento(TarjetaDebito tarjetaDebito) throws FileNotFoundException {
+        try {
+            tarjetaDebito.getMovimientos().getLast();
+        } catch (FileNotFoundException e) {}
+   }
     //Registrar Cliente
     public static List<Cliente> cliente = new ArrayList<>();
 
