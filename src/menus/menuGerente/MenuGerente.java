@@ -66,11 +66,9 @@ public class MenuGerente {
                     // Generar RFC automáticamente
                     String rfcCliente = banco.generarRFCDesdeCURP(curpCliente);
 
-                    System.out.println("Ingresa el saldo inicial de débito:");
-                    double saldoInicialDebito = scanner.nextDouble();
 
-                    Cliente cliente = new Cliente(id, nombre, apellidos, curpCliente,rfcCliente,direccionCliente,fechaNacimiento,saldoInicialDebito);
-                    banco.registrarCliente(id, nombre,apellidos,curpCliente,rfcCliente,direccionCliente,fechaNacimiento,saldoInicialDebito);
+                    Cliente cliente = new Cliente(id, nombre, apellidos, curpCliente,rfcCliente,direccionCliente,fechaNacimiento);
+                    banco.registrarCliente(id, nombre,apellidos,curpCliente,rfcCliente,direccionCliente,fechaNacimiento);
 
                     System.out.println("Registro del cliente exitoso!");
 

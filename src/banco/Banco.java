@@ -188,14 +188,14 @@ public class Banco {
             return (List<Cliente>) s.readObject();
         }
     }
-    public static void registrarCliente(String id,String nombre, String apellido, String curp, String RFC, String direccion, LocalDate fechaRegistro,double saldoInicialDebito) {
+    public static void registrarCliente(String id,String nombre, String apellido, String curp, String RFC, String direccion, LocalDate fechaRegistro) {
         for(Cliente p : cliente) {
             if(p.getNombre().equals(nombre) && p.getCurp() == curp) {
                 System.out.println("Usuario existente. No se puede registrar.");
                 return;
             }
         }
-        cliente.add(new Cliente(id,nombre,apellido,curp, RFC,direccion,fechaRegistro,saldoInicialDebito));
+        cliente.add(new Cliente(id,nombre,apellido,curp, RFC,direccion,fechaRegistro));
         System.out.println("Persona agregada exitosamente.");
     }
 
