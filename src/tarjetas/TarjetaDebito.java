@@ -12,6 +12,7 @@ public class TarjetaDebito {
     private final int cvv;
     public LocalDate fechaVencimiento;
     private ArrayList<LocalDateTime> movimientos = new ArrayList<>();
+    private boolean estado;
 
     public TarjetaDebito(double saldo, String numeroTarjeta, LocalDate fecha, int cvv, LocalDate fechaVencimiento) {
         this.saldo = saldo;
@@ -20,7 +21,16 @@ public class TarjetaDebito {
         this.cvv = cvv;
         this.fechaVencimiento = fechaVencimiento;
         this.movimientos = new ArrayList<>(movimientos);
+        this.estado = true;
     }
+
+    public boolean isEstado() {
+        return estado;
+    }
+    public void setEstado(boolean estado) {
+        this.estado = estado;
+    }
+
 
 
     public double getSaldo() {

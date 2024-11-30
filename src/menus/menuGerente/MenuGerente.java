@@ -77,16 +77,33 @@ public class MenuGerente {
 
                     break;
                 case 2:
+                    scanner.nextLine();
+                    System.out.println("MODIFICAR CLIENTES");
+                    System.out.println("Ingrese el nombre del cliente a modificar:");
+                    String nombre1 = scanner.nextLine();
+                    banco.modificarCliente(nombre1);
                     break;
                 case 3:
+                    scanner.nextLine();
+                    System.out.println("Actualizar estado de cuenta");
+                    banco.consultarYActualizarEstadoCuentas(banco, scanner);
                     break;
                 case 4:
+                    scanner.nextLine();
+                    System.out.println("Desactivar la cuenta");
+                    banco.desactivarCuentaCliente(banco, scanner);
                     break;
                 case 5:
                     break;
                 case 6:
+                    scanner.nextLine();
+                    System.out.println("Gestionar empleados");
+                    banco.gestionarEmpleados(banco, scanner);
                     break;
                 case 7:
+                    scanner.nextLine();
+                    System.out.println("Modificar empleados");
+                    banco.modificarEmpleado(banco, scanner);
                     break;
                 case 8:
                     System.out.println("Saliendo del menu...");

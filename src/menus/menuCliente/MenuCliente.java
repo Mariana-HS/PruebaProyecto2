@@ -1,10 +1,12 @@
 package menus.menuCliente;
 
+import tarjetas.TarjetaDebito;
 import usuarios.cliente.Cliente;
 
 import java.util.Scanner;
-
+import banco.Banco;
 public class MenuCliente {
+    Banco banco = new Banco();
 
     public void mostrarMenuCliente(Cliente clienteEnSesion) {
         Scanner scanner = new Scanner(System.in);
@@ -28,14 +30,22 @@ public class MenuCliente {
 
                     break;
                 case 3:
-
+                    System.out.println("CONSULTAR MOVIMIENTOS");
+                    System.out.println("Ingresa la tarjeta de debito");
+                    TarjetaDebito tarjetaDebito = clienteEnSesion.getTarjetaDebito();
+                    banco.historialMovimientosTarjetaDeDebito(tarjetaDebito);
                     break;
                     case 4:
+                        System.out.println("CONSULTAR ULTIMOS MOVIMIENTOS");
+                        System.out.println("Ingresa la tarjeta de debito");
+                        TarjetaDebito tarjetaDebito1 = clienteEnSesion.getTarjetaDebito();
+                        banco.obtenerUltimoMovimiento(tarjetaDebito1);
 
                         break;
                         case 5:
+                            System.out.println("Saliendo del menu...");
+                            return;
 
-                            break;
                 default:
                     System.out.println("Opción no válida, por favor seleccione de nuevo.");
             }

@@ -11,6 +11,7 @@ import menus.menuCliente.MenuCliente;
 import menus.menuGerente.MenuGerente;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.Scanner;
 
 public class Menu {
@@ -21,6 +22,13 @@ public class Menu {
     private Banco banco = new Banco();
 
     public void login() {
+        String cId = banco.generarIdGerente("Victor", "Lopez");
+        LocalDate cFechaNacimiento = LocalDate.of(2000, 4, 1);
+        Gerente cGerente= new Gerente(cId,"Victor","Lopez","RACW050729MMCSHNA2","ihjghfhgj","ghfgfhjhj", 85789.900,"Gerente","123");
+        cGerente.setIdUsuario("vic123");
+        cGerente.setContrasenia("123");
+        banco.registrarUsuario(cGerente);
+
         try {
             Banco.cargarUsuarios();
             //Cargar usuarios desde archivo

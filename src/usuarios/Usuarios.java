@@ -25,6 +25,10 @@ public class Usuarios {
         this.Usuario= Usuario;
     }
 
+    public String getIdUsuario() {
+        return idUsuario;
+    }
+
     public String getNombre() {
         return nombre;
     }
@@ -55,6 +59,18 @@ public class Usuarios {
 
     public String getUsuario() {
         return Usuario;
+    }
+
+    public void setIdUsuario(String idUsuario) {
+        this.idUsuario = idUsuario;
+    }
+
+    public void setContrasenia(String contrasenia) {
+        this.contrasenia = contrasenia;
+    }
+
+    public void setUsuario(String usuario) {
+        Usuario = usuario;
     }
 
     public void setNombre(String nombre) {
