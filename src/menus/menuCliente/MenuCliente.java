@@ -6,9 +6,8 @@ import usuarios.cliente.Cliente;
 import java.util.Scanner;
 import banco.Banco;
 public class MenuCliente {
-    Banco banco = new Banco();
 
-    public void mostrarMenuCliente(Cliente clienteEnSesion) {
+    public void mostrarMenuCliente(Cliente clienteEnSesion, Banco banco) {
         Scanner scanner = new Scanner(System.in);
         int opcion = 0;
 

@@ -11,10 +11,8 @@ import java.util.Scanner;
 import java.util.concurrent.RecursiveTask;
 
 public class MenuEmpleados {
-    Banco banco = new Banco();
-    MenuCliente menuCliente= new MenuCliente();
 
-    public void mostrarMenuEmpleado(Empleados empleadosEnSesion) {
+    public void mostrarMenuEmpleado(Empleados empleadosEnSesion, Banco banco) {
         Scanner scanner = new Scanner(System.in);
         int opcion = 0;
 
@@ -66,14 +64,20 @@ public class MenuEmpleados {
                     // Generar RFC automáticamente
                     String rfcCliente = banco.generarRFCDesdeCURP(curpCliente);
 
+                    System.out.println("Ingrese el usuario: ");
+                    String usuario = scanner.nextLine();
 
-                    Cliente cliente = new Cliente(id, nombre, apellidos, curpCliente,rfcCliente,direccionCliente,fechaNacimiento);
-                    Banco.registrarCliente(id, nombre,apellidos,curpCliente,rfcCliente,direccionCliente,fechaNacimiento);
+                    System.out.println("Ingresa su pontrasenia: ");
+                    String contrasenia = scanner.nextLine();
+
+
+                    Cliente cliente = new Cliente(id, nombre, apellidos, curpCliente,rfcCliente,direccionCliente,fechaNacimiento,usuario,contrasenia);
+                    Banco.registrarCliente(id, nombre,apellidos,curpCliente,rfcCliente,direccionCliente,fechaNacimiento,usuario,contrasenia);
 
                     System.out.println("Registro del cliente exitoso!");
 
                     // Acceder al menú del cliente después del registro
-                    menuCliente.mostrarMenuCliente(cliente);
+
                 case 2:
                     System.out.println("LISTAR CLIENTES");
                    banco.obtenerClientes();

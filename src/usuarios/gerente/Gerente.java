@@ -6,8 +6,8 @@ import usuarios.Usuarios;
 public class Gerente extends Usuarios {
     public double salario;
 
-    public Gerente(String id, String nombre, String apellido, String curp, String RFC, String direccion, double salario, String usuario, String contrasena) {
-        super(id, nombre, apellido, curp, RFC, direccion, Rol.GERENTE);
+    public Gerente(String id, String nombre, String apellido, String curp, String RFC, String direccion, double salario, String contrasena, String usuario) {
+        super(id, nombre, apellido, curp, RFC, direccion, Rol.GERENTE, contrasena, usuario);
         this.salario = salario;
     }
 
@@ -28,7 +28,7 @@ public class Gerente extends Usuarios {
                 "\"RFC\":\"" + this.RFC + "\"," +
                 "\"direccion\":\"" + this.direccion + "\"," +
                 "\"rol\":\"" + this.rol + "\"," +
-                "\"usuario\":\"" + this.Usuario + "\"," +
+                "\"usuario\":\"" + this.usuario + "\"," +
                 "\"contrasenia\":\"" + this.contrasenia + "\"," +
                 "\"salario\":\"" + this.salario + "\"" +
                 "}";

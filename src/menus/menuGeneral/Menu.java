@@ -23,9 +23,7 @@ public class Menu {
 
     public void login() {
         String cId = banco.generarIdGerente("Victor", "Lopez");
-        Gerente cGerente= new Gerente(cId,"Victor","Lopez","RACW050729MMCSHNA2","ihjghfhgj","ghfgfhjhj", 85789.900,"Gerente","123");
-        cGerente.setUsuario("vic123");
-        cGerente.setContrasenia("123");
+        Gerente cGerente= new Gerente(cId,"Victor","Lopez","RACW050729MMCSHNA2","ihjghfhgj","ghfgfhjhj", 85789.900,"123","vic123");
         banco.registrarUsuario(cGerente);
         guardarUsuarios();
 
@@ -53,20 +51,22 @@ public class Menu {
                 Usuarios usuarioEnSesion = banco.validarInicioDeSesion(usuario, contrasenia);
                 if (usuarioEnSesion.getRol() == Rol.CLIENTE) {
                     Cliente clienteEnSesion = (Cliente) usuarioEnSesion;
-                    menuCliente.mostrarMenuCliente(clienteEnSesion);
+                    menuCliente.mostrarMenuCliente(clienteEnSesion, banco);
                 } else if (usuarioEnSesion.getRol() == Rol.GERENTE) {
                     Gerente gerenteEnSesion = (Gerente) usuarioEnSesion;
-                    menuGerente.mostrarMenuGerente(gerenteEnSesion);
+                    menuGerente.mostrarMenuGerente(gerenteEnSesion, banco);
                 } else if (usuarioEnSesion.getRol() == Rol.EMPLEADO) {
                     Empleados empleadoEnSesion = (Empleados) usuarioEnSesion;
-                    menuEmpleados.mostrarMenuEmpleado(empleadoEnSesion);
+                    menuEmpleados.mostrarMenuEmpleado(empleadoEnSesion, banco);
                 }
                 return;
 
         } catch(Banco.InicioSesionException e){
             intentosUsuario = mostrarErrorInicioSesion(intentosUsuario, e.getMessage());
+        } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
-    }
 
         }
 

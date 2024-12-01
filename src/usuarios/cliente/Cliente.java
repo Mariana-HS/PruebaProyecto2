@@ -13,8 +13,8 @@ public class Cliente extends Usuarios {
     public TarjetaCredito tarjetaCredito;
 
 
-    public Cliente(String id, String nombre, String apellido, String curp, String RFC, String direccion, LocalDate fechaRegistro) {
-        super(id, nombre, apellido, curp, RFC, direccion, Rol.CLIENTE);
+    public Cliente(String id, String nombre, String apellido, String curp, String RFC, String direccion, LocalDate fechaRegistro, String contrasenia, String usuario) {
+        super(id, nombre, apellido, curp, RFC, direccion, Rol.CLIENTE, contrasenia, usuario );
         this.fechaRegistro = fechaRegistro;
         this.tarjetaDebito = tarjetaDebito; }
 

@@ -11,12 +11,11 @@ import java.util.Scanner;
 
 public class MenuGerente {
 
-    public void mostrarMenuGerente(Gerente gerenteEnSesion) {
-        MenuCliente menuCliente = new MenuCliente();
-        Banco banco = new Banco();
+    public void mostrarMenuGerente(Gerente gerenteEnSesion, Banco banco) throws IOException {
         Scanner scanner = new Scanner(System.in);
 
         this.cargarEmpleados(banco);
+        
 
         int opcion = 0;
         while (opcion != 7) {
@@ -69,14 +68,19 @@ public class MenuGerente {
                     // Generar RFC automáticamente
                     String rfcCliente = banco.generarRFCDesdeCURP(curpCliente);
 
+                    System.out.println("Ingrese el usuario: ");
+                    String usuario = scanner.nextLine();
 
-                    Cliente cliente = new Cliente(id, nombre, apellidos, curpCliente,rfcCliente,direccionCliente,fechaNacimiento);
-                    banco.registrarCliente(id, nombre,apellidos,curpCliente,rfcCliente,direccionCliente,fechaNacimiento);
+                    System.out.println("Ingresa su pontrasenia: ");
+                    String contrasenia = scanner.nextLine();
+
+
+                    Cliente cliente = new Cliente(id, nombre, apellidos, curpCliente,rfcCliente,direccionCliente,fechaNacimiento, contrasenia, usuario);
+                    banco.registrarCliente(id, nombre,apellidos,curpCliente,rfcCliente,direccionCliente,fechaNacimiento,contrasenia,usuario);
 
                     System.out.println("Registro del cliente exitoso!");
 
                     // Acceder al menú del cliente después del registro
-                    menuCliente.mostrarMenuCliente(cliente);
 
                     break;
                 case 2:
@@ -108,7 +112,7 @@ public class MenuGerente {
                     break;
                 case 7:
                     System.out.println("Saliendo del menu...");
-                    return;
+                    break;
 
                 default:
                     System.out.println("Opción no válida. Por favor, elige nuevamente.");

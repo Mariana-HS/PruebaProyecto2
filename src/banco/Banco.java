@@ -222,7 +222,7 @@ public class Banco {
     //Registrar Cliente
 
     public static List<Cliente> leer() throws FileNotFoundException, IOException,ClassNotFoundException {
-        File archivo = new File("datos.dat");
+        File archivo = new File("clientes.txt");
         if (!archivo.exists()) {
             return new ArrayList<>();
         }
@@ -230,21 +230,21 @@ public class Banco {
             return (List<Cliente>) s.readObject();
         }
     }
-    public static void registrarCliente(String id,String nombre, String apellido, String curp, String RFC, String direccion, LocalDate fechaRegistro) {
+    public static void registrarCliente(String id,String nombre, String apellido, String curp, String RFC, String direccion, LocalDate fechaRegistro, String usuario, String contrasenia) {
         for(Cliente p : clientes) {
             if(p.getNombre().equals(nombre) && p.getCurp() == curp) {
                 System.out.println("Usuario existente. No se puede registrar.");
                 return;
             }
         }
-        clientes.add(new Cliente(id,nombre,apellido,curp, RFC,direccion,fechaRegistro));
+        clientes.add(new Cliente(id,nombre,apellido,curp, RFC,direccion,fechaRegistro, usuario, contrasenia));
         System.out.println("Persona agregada exitosamente.");
     }
 
     // Lista y métodos para manejar usuarios
 
     // Metodo para registrar un usuario
-    public static void registrarUsuario(Usuarios usuario) { usuariosRegistrados.add(usuario); }
+    public void registrarUsuario(Usuarios usuario) { usuariosRegistrados.add(usuario); }
 
     // Metodo para validar el inicio de sesion
     public Usuarios validarInicioDeSesion(String usuario, String contrasenia) throws InicioSesionException {
@@ -299,7 +299,7 @@ public class Banco {
 
     //Metodo para cargar usuarios desde archivo
     public static void cargarUsuarios() throws IOException, ClassNotFoundException {
-        File archivo = new File("usuarios.dat"); if (!archivo.exists()) {
+        File archivo = new File("usuarios.txt"); if (!archivo.exists()) {
             usuariosRegistrados = new ArrayList<>(); return; }
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(archivo))) {
             usuariosRegistrados = (ArrayList<Usuarios>) ois.readObject(); } }
@@ -327,6 +327,7 @@ public class Banco {
             empleado.setContrasenia(String.valueOf(data.get("contrasena")));
 
            this.listaEmpleados.add(empleado);
+           this.usuariosRegistrados.add(empleado);
         }
 
         reader.close();
@@ -446,7 +447,7 @@ public class Banco {
     }
 
 
-    public void gestionarEmpleados(Banco banco, Scanner scanner) {
+    public void gestionarEmpleados(Banco banco, Scanner scanner) throws IOException {
         System.out.println("\n1. Contratar empleado");
         System.out.println("2. Despedir empleado");
         System.out.print("Seleccione una opción:\n");
@@ -455,7 +456,7 @@ public class Banco {
 
         switch (opcion) {
             case 1:
-                contratarEmpleado(banco, scanner);
+                registrarEmpleado(banco, scanner);
                 break;
             case 2:
                 despedirEmpleado(banco, scanner);
@@ -465,7 +466,7 @@ public class Banco {
         }
     }
 
-    private void contratarEmpleado(Banco banco, Scanner scanner) {
+    private void registrarEmpleado(Banco banco, Scanner scanner) throws IOException {
         System.out.println("\nContratando nuevo empleado...");
         System.out.print("Ingrese el nombre: ");
         String nombre = scanner.nextLine();
@@ -494,8 +495,9 @@ public class Banco {
 
         String id = banco.generarIdEmpleado(nombre, apellido);
 
-        Empleados nuevoEmpleado = new Empleados(id, nombre, apellido, curp, rfc, direccion, salario, usuario, contrasena);
+        Empleados nuevoEmpleado = new Empleados(id, nombre, apellido, curp, rfc, direccion, salario, contrasena, usuario);
         banco.contratarEmpleado(nuevoEmpleado);
+        banco.guardarUsuarios();
 
         System.out.println("¡Empleado contratado exitosamente!");
     }
@@ -526,6 +528,7 @@ public class Banco {
 
     public void contratarEmpleado(Empleados empleado) {
         listaEmpleados.add(empleado);
+        usuariosRegistrados.add(empleado);
 
         try {
             guardarEmpleados();

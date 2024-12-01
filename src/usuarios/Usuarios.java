@@ -11,9 +11,9 @@ public class Usuarios {
     public String direccion;
     public Rol rol;
     public String contrasenia;
-    public String Usuario;
+    public String usuario;
 
-    public Usuarios(String idUsuario, String nombre, String apellido, String curp, String RFC, String direccion, Rol rol) {
+    public Usuarios(String idUsuario, String nombre, String apellido, String curp, String RFC, String direccion, Rol rol, String contrasenia, String usuario) {
         this.idUsuario = idUsuario;
         this.nombre = nombre;
         this.apellido = apellido;
@@ -21,8 +21,8 @@ public class Usuarios {
         this.RFC = RFC;
         this.direccion = direccion;
         this.rol = rol;
-        //this.contrasenia=contrasenia;
-        //this.Usuario= Usuario;
+        this.contrasenia = contrasenia;
+        this.usuario= usuario;
     }
 
     public String getIdUsuario() {
@@ -58,7 +58,7 @@ public class Usuarios {
     }
 
     public String getUsuario() {
-        return Usuario;
+        return usuario;
     }
 
     public void setIdUsuario(String idUsuario) {
@@ -70,7 +70,7 @@ public class Usuarios {
     }
 
     public void setUsuario(String usuario) {
-        Usuario = usuario;
+        usuario = usuario;
     }
 
     public void setNombre(String nombre) {
@@ -106,7 +106,7 @@ public class Usuarios {
                 "\"RFC\":\"" + this.RFC + "\"," +
                 "\"direccion\":\"" + this.direccion + "\"," +
                 "\"rol\":\"" + this.rol + "\"," +
-                "\"usuario\":\"" + this.Usuario + "\"," +
+                "\"usuario\":\"" + this.usuario + "\"," +
                 "\"contrasenia\":\"" + this.contrasenia + "\"" +
                 "}";
     }
