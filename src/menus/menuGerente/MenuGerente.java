@@ -14,7 +14,6 @@ public class MenuGerente {
     public void mostrarMenuGerente(Gerente gerenteEnSesion, Banco banco) throws IOException {
         Scanner scanner = new Scanner(System.in);
 
-        this.cargarEmpleados(banco);
         
 
         int opcion = 0;
@@ -120,12 +119,5 @@ public class MenuGerente {
         }
     }
 
-    public void cargarEmpleados(Banco banco) {
-        try {
-            banco.cargarEmpleados();
-            // System.out.println("Empleados cargados exitosamente.");
-        } catch (IOException e) {
-            // System.out.println("Error al cargar los empleados: " + e.getMessage());
-        }
-    }
+
 }

@@ -22,10 +22,13 @@ public class Menu {
     private Banco banco = new Banco();
 
     public void login() {
+        this.cargarUsuarios(banco);
+        this.cargarEmpleados(banco);
         String cId = banco.generarIdGerente("Victor", "Lopez");
         Gerente cGerente= new Gerente(cId,"Victor","Lopez","RACW050729MMCSHNA2","ihjghfhgj","ghfgfhjhj", 85789.900,"123","vic123");
         banco.registrarUsuario(cGerente);
-        guardarUsuarios();
+
+
 
         /*try {
             /Banco.cargarUsuarios();
@@ -88,6 +91,23 @@ public class Menu {
                 System.out.println("Error al guardar los usuarios: " + e.getMessage());
             }
         }
+
+    public void cargarEmpleados(Banco banco) {
+        try {
+            banco.cargarEmpleados();
+            // System.out.println("Empleados cargados exitosamente.");
+        } catch (IOException e) {
+            // System.out.println("Error al cargar los empleados: " + e.getMessage());
+        }
+    }
+
+    public void cargarUsuarios(Banco banco){
+        try {
+            banco.cargarUsuarios();
+        } catch (IOException e) {
+
+        }
+    }
     }
 
 

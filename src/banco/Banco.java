@@ -1,5 +1,6 @@
 package banco;
 
+import resourses.Rol;
 import tarjetas.TarjetaDebito;
 import usuarios.cliente.Cliente;
 import usuarios.Usuarios;
@@ -17,7 +18,7 @@ public class Banco {
     Scanner scanner = new Scanner(System.in);
     Random random = new Random();
     ArrayList<TarjetaDebito> tarjetasDebito = new ArrayList<>();
-    private static ArrayList<Usuarios> usuariosRegistrados = new ArrayList<Usuarios>();
+    private ArrayList<Usuarios> usuariosRegistrados = new ArrayList<Usuarios>();
     public static List<Cliente> clientes = new ArrayList<>();
     public ArrayList<Empleados> listaEmpleados = new ArrayList<>();
 
@@ -298,11 +299,32 @@ public class Banco {
     }
 
     //Metodo para cargar usuarios desde archivo
-    public static void cargarUsuarios() throws IOException, ClassNotFoundException {
-        File archivo = new File("usuarios.txt"); if (!archivo.exists()) {
-            usuariosRegistrados = new ArrayList<>(); return; }
-        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(archivo))) {
-            usuariosRegistrados = (ArrayList<Usuarios>) ois.readObject(); } }
+   public void cargarUsuarios() throws IOException {
+        FileReader file = new FileReader("usuarios.txt");
+        BufferedReader reader = new BufferedReader(file);
+        String linea;
+
+        while ((linea = reader.readLine()) != null) {
+            Map <String, Object> data = Utils.convertStringToJsonObject(linea);
+
+            Usuarios usuario = new Usuarios(
+                    String.valueOf(data.get("idUsuario")),
+                    String.valueOf(data.get("nombre")),
+                    String.valueOf(data.get("apellido")),
+                    String.valueOf(data.get("curp")),
+                    String.valueOf(data.get("RFC")),
+                    String.valueOf(data.get("direccion")),
+                    Rol.valueOf(data.get("rol").toString()),
+                    String.valueOf(data.get("usuario")),
+                    String.valueOf(data.get("contrasena"))
+            );
+            usuario.setUsuario(String.valueOf(data.get("Usuario")));
+            usuario.setContrasenia(String.valueOf(data.get("contrasena")));
+
+            this.usuariosRegistrados.add(usuario);
+        }
+        reader.close();
+    }
 
     public void cargarEmpleados() throws IOException {
         FileReader file  = new FileReader("empleados.txt");
@@ -323,11 +345,10 @@ public class Banco {
                     String.valueOf(data.get("idUsuario")),
                     String.valueOf(data.get("contrasena"))
             );
-            empleado.setUsuario(String.valueOf(data.get("idUsuario")));
+            empleado.setUsuario(String.valueOf(data.get("Usuario")));
             empleado.setContrasenia(String.valueOf(data.get("contrasena")));
 
            this.listaEmpleados.add(empleado);
-           this.usuariosRegistrados.add(empleado);
         }
 
         reader.close();
@@ -497,7 +518,6 @@ public class Banco {
 
         Empleados nuevoEmpleado = new Empleados(id, nombre, apellido, curp, rfc, direccion, salario, contrasena, usuario);
         banco.contratarEmpleado(nuevoEmpleado);
-        banco.guardarUsuarios();
 
         System.out.println("¡Empleado contratado exitosamente!");
     }
@@ -532,6 +552,7 @@ public class Banco {
 
         try {
             guardarEmpleados();
+            guardarUsuarios();
         } catch (IOException e) {
             System.out.println("Error al guardar los empleados: " + e.getMessage());
         }
