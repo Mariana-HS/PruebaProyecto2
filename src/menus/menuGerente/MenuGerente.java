@@ -5,6 +5,7 @@ import menus.menuCliente.MenuCliente;
 import usuarios.cliente.Cliente;
 import usuarios.gerente.Gerente;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Scanner;
 
@@ -14,17 +15,19 @@ public class MenuGerente {
         MenuCliente menuCliente = new MenuCliente();
         Banco banco = new Banco();
         Scanner scanner = new Scanner(System.in);
+
+        this.cargarEmpleados(banco);
+
         int opcion = 0;
-        while (opcion != 8) {
+        while (opcion != 7) {
             System.out.println("\n*BIENVENIDO*");
             System.out.println("1. Registrar cliente");
             System.out.println("2. Modificar información clientes");
             System.out.println("3. Consultar y actualizar el estado de las cuentas");
             System.out.println("4. Desactivar cuentas de clientes");
-            System.out.println("5. Asignar productos y servicios");
-            System.out.println("6. Contratar o despedir empleados ");
-            System.out.println("7. Modificar información de los empleados");
-            System.out.println("8. Salir");
+            System.out.println("5. Contratar o despedir empleados ");
+            System.out.println("6. Modificar información de los empleados");
+            System.out.println("7. Salir");
 
             System.out.print("\nSeleccione una opción:\n");
             opcion = scanner.nextInt();
@@ -94,18 +97,16 @@ public class MenuGerente {
                     banco.desactivarCuentaCliente(banco, scanner);
                     break;
                 case 5:
-                    break;
-                case 6:
                     scanner.nextLine();
                     System.out.println("Gestionar empleados");
                     banco.gestionarEmpleados(banco, scanner);
                     break;
-                case 7:
+                case 6:
                     scanner.nextLine();
                     System.out.println("Modificar empleados");
                     banco.modificarEmpleado(banco, scanner);
                     break;
-                case 8:
+                case 7:
                     System.out.println("Saliendo del menu...");
                     return;
 
@@ -115,4 +116,12 @@ public class MenuGerente {
         }
     }
 
+    public void cargarEmpleados(Banco banco) {
+        try {
+            banco.cargarEmpleados();
+            // System.out.println("Empleados cargados exitosamente.");
+        } catch (IOException e) {
+            // System.out.println("Error al cargar los empleados: " + e.getMessage());
+        }
+    }
 }

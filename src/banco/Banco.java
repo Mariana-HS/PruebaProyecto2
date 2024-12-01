@@ -11,12 +11,21 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
+import resourses.Utils;
 
 public class Banco {
     Scanner scanner = new Scanner(System.in);
     Random random = new Random();
     ArrayList<TarjetaDebito> tarjetasDebito = new ArrayList<>();
-    File tarjetasDebitoArchivo = new File("tarjertasDebito.dat");
+    private static ArrayList<Usuarios> usuariosRegistrados = new ArrayList<Usuarios>();
+    public static List<Cliente> clientes = new ArrayList<>();
+    public ArrayList<Empleados> listaEmpleados = new ArrayList<>();
+
+
+    public void cargarData(){
+
+    }
+
 
     //Generar id cliente
     LocalDateTime fecha = LocalDateTime.now();
@@ -126,8 +135,6 @@ public class Banco {
 
     // Métodos Relacionados con Tarjeta de Debito
     public String generarNumeroTarjeta(){
-       // int primeraMitad = random.nextInt(1,99999999);
-        //int segundaMitad = random.nextInt(1,99999999);
         int primeraMitad = ThreadLocalRandom.current().nextInt(1,99999999);
         int segundaMitad = ThreadLocalRandom.current().nextInt(1,99999999);
 
@@ -136,7 +143,6 @@ public class Banco {
     }
 
     public int cvv(){
-       // int cvv = random.nextInt(1,999);
         int cvv = ThreadLocalRandom.current().nextInt(1,999);
         return cvv;
     }
@@ -198,11 +204,6 @@ public class Banco {
        tarjetaDebito.getMovimientos().add(fechaMovimiento);
    }
 
-  /*public void obtenerUltimoMovimiento(TarjetaDebito tarjetaDebito) throws FileNotFoundException {
-        try {
-            tarjetaDebito.getMovimientos().getLast();
-        } catch (FileNotFoundException e) {}
-   }*/
 
     public void obtenerUltimoMovimiento(TarjetaDebito tarjetaDebito) {
         if (!tarjetaDebito.getMovimientos().isEmpty()) {
@@ -219,7 +220,6 @@ public class Banco {
 
 
     //Registrar Cliente
-    public static List<Cliente> cliente = new ArrayList<>();
 
     public static List<Cliente> leer() throws FileNotFoundException, IOException,ClassNotFoundException {
         File archivo = new File("datos.dat");
@@ -231,18 +231,17 @@ public class Banco {
         }
     }
     public static void registrarCliente(String id,String nombre, String apellido, String curp, String RFC, String direccion, LocalDate fechaRegistro) {
-        for(Cliente p : cliente) {
+        for(Cliente p : clientes) {
             if(p.getNombre().equals(nombre) && p.getCurp() == curp) {
                 System.out.println("Usuario existente. No se puede registrar.");
                 return;
             }
         }
-        cliente.add(new Cliente(id,nombre,apellido,curp, RFC,direccion,fechaRegistro));
+        clientes.add(new Cliente(id,nombre,apellido,curp, RFC,direccion,fechaRegistro));
         System.out.println("Persona agregada exitosamente.");
     }
 
     // Lista y métodos para manejar usuarios
-    private static List<Usuarios> usuariosRegistrados = new ArrayList<>();
 
     // Metodo para registrar un usuario
     public static void registrarUsuario(Usuarios usuario) { usuariosRegistrados.add(usuario); }
@@ -263,23 +262,81 @@ public class Banco {
         throw new InicioSesionException("Usuario o contraseña incorrectos.");
     }
     // Metodo para guardar usuarios en archivo
-    public static void guardarUsuarios() throws IOException {
-        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("usuarios.dat"))) {
-            oos.writeObject(usuariosRegistrados); } }
+    public void guardarUsuarios() throws IOException {
+        FileWriter file = new FileWriter("usuarios.txt");
+        BufferedWriter writer = new BufferedWriter(file);
+
+        int index = 0;
+        for (Usuarios usuariosRegistrado : usuariosRegistrados) {
+            if (index > 0) {
+                writer.write("\n");
+            }
+
+            writer.write(usuariosRegistrado.toString());
+            index++;
+        }
+
+        writer.close();
+    }
+
+    // Metodo para guardar usuarios en archivo
+    public void guardarEmpleados() throws IOException {
+        FileWriter file = new FileWriter("empleados.txt");
+        BufferedWriter writer = new BufferedWriter(file);
+
+        int index = 0;
+        for (Empleados empleado : listaEmpleados) {
+            if (index > 0) {
+                writer.write("\n");
+            }
+
+            writer.write(empleado.toString());
+            index++;
+        }
+
+        writer.close();
+    }
 
     //Metodo para cargar usuarios desde archivo
     public static void cargarUsuarios() throws IOException, ClassNotFoundException {
         File archivo = new File("usuarios.dat"); if (!archivo.exists()) {
             usuariosRegistrados = new ArrayList<>(); return; }
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(archivo))) {
-            usuariosRegistrados = (List<Usuarios>) ois.readObject(); } }
+            usuariosRegistrados = (ArrayList<Usuarios>) ois.readObject(); } }
 
+    public void cargarEmpleados() throws IOException {
+        FileReader file  = new FileReader("empleados.txt");
+        BufferedReader reader = new BufferedReader(file);
+        String line;
+
+        while ((line = reader.readLine()) != null) {
+            Map<String, Object> data = Utils.convertStringToJsonObject(line);
+
+            Empleados empleado = new Empleados(
+                    String.valueOf(data.get("idUsuario")),
+                    String.valueOf(data.get("nombre")),
+                    String.valueOf(data.get("apellido")),
+                    String.valueOf(data.get("curp")),
+                    String.valueOf(data.get("RFC")),
+                    String.valueOf(data.get("direccion")),
+                    Double.parseDouble(String.valueOf(data.get("salario"))),
+                    String.valueOf(data.get("idUsuario")),
+                    String.valueOf(data.get("contrasena"))
+            );
+            empleado.setUsuario(String.valueOf(data.get("idUsuario")));
+            empleado.setContrasenia(String.valueOf(data.get("contrasena")));
+
+           this.listaEmpleados.add(empleado);
+        }
+
+        reader.close();
+    }
 
     public class InicioSesionException extends Exception { public InicioSesionException(String mensaje) { super(mensaje); } }
 
 
     public void modificarCliente(String nombre1) {
-        for (Cliente cliente : cliente) {
+        for (Cliente cliente : clientes) {
             if (cliente.getNombre().equalsIgnoreCase(nombre1)) {
                 System.out.println("\n Modificar nombre: " + nombre1);
 
@@ -465,10 +522,16 @@ public class Banco {
     }
 
 
-    public ArrayList<Empleados> listaEmpleados = new ArrayList<>();
+
 
     public void contratarEmpleado(Empleados empleado) {
         listaEmpleados.add(empleado);
+
+        try {
+            guardarEmpleados();
+        } catch (IOException e) {
+            System.out.println("Error al guardar los empleados: " + e.getMessage());
+        }
     }
 
     public Empleados buscarEmpleado(String identificador) {
@@ -542,7 +605,7 @@ public class Banco {
     }
 
     public List<Cliente> obtenerClientes() {
-        return cliente;
+        return clientes;
     }
 
 
@@ -550,14 +613,14 @@ public class Banco {
         Cliente clienteAEliminar = null;
 
         // Buscar al cliente por su ID
-        for (Cliente cliente : cliente) {
+        for (Cliente cliente : clientes) {
             if (cliente.getIdUsuario().equals(id)) {
                 clienteAEliminar = cliente;
                 break;
             }
         }
         if (clienteAEliminar != null) {
-            cliente.remove(clienteAEliminar);
+            clientes.remove(clienteAEliminar);
             return true;
         } else {
             return false;

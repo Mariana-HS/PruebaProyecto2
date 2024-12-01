@@ -4,6 +4,8 @@ import usuarios.cliente.Cliente;
 import usuarios.empleados.Empleados;
 import menus.menuCliente.MenuCliente;
 import banco.Banco;
+
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Scanner;
 import java.util.concurrent.RecursiveTask;
@@ -15,6 +17,8 @@ public class MenuEmpleados {
     public void mostrarMenuEmpleado(Empleados empleadosEnSesion) {
         Scanner scanner = new Scanner(System.in);
         int opcion = 0;
+
+        this.cargarEmpleados(banco);
 
         while (opcion != 5) {
             System.out.println("1. Registrar cliente.");
@@ -96,6 +100,15 @@ public class MenuEmpleados {
                                         return;
             }
 
+        }
+    }
+
+    public void cargarEmpleados(Banco banco) {
+        try {
+            banco.cargarEmpleados();
+            // System.out.println("Empleados cargados exitosamente.");
+        } catch (IOException e) {
+            // System.out.println("Error al cargar los empleados: " + e.getMessage());
         }
     }
 }

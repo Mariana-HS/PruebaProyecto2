@@ -23,23 +23,22 @@ public class Menu {
 
     public void login() {
         String cId = banco.generarIdGerente("Victor", "Lopez");
-        LocalDate cFechaNacimiento = LocalDate.of(2000, 4, 1);
         Gerente cGerente= new Gerente(cId,"Victor","Lopez","RACW050729MMCSHNA2","ihjghfhgj","ghfgfhjhj", 85789.900,"Gerente","123");
-        cGerente.setIdUsuario("vic123");
+        cGerente.setUsuario("vic123");
         cGerente.setContrasenia("123");
         banco.registrarUsuario(cGerente);
+        guardarUsuarios();
 
-        try {
-            Banco.cargarUsuarios();
-            //Cargar usuarios desde archivo
+        /*try {
+            /Banco.cargarUsuarios();
+            Cargar usuarios desde archivo
         } catch (IOException | ClassNotFoundException e) {
             System.out.println("Error al cargar los usuarios: " + e.getMessage());
-        }
+        }*/
         int intentosMaximos = 5;
         int intentosUsuario = 0;
 
         while (intentosUsuario < intentosMaximos) {
-            scanner.nextLine();
 
             System.out.println("\n¡BIENVENIDO!\n");
         System.out.println("¿Ya cuentas con tu cuenta de banco? Si/No");
@@ -81,7 +80,7 @@ public class Menu {
 
     public void guardarUsuarios() {
             try {
-                Banco.guardarUsuarios();
+                banco.guardarUsuarios();
 
                 // Guardar usuarios en archivo
                 System.out.println("Usuarios guardados exitosamente.");
