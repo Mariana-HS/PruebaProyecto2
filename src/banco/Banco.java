@@ -263,8 +263,8 @@ public class Banco {
         throw new InicioSesionException("Usuario o contraseña incorrectos.");
     }
     // Metodo para guardar usuarios en archivo
-    public void guardarUsuarios() throws IOException {
-        FileWriter file = new FileWriter("usuarios.txt");
+    public void guardarGerentes() throws IOException {
+        FileWriter file = new FileWriter("gerentes.txt");
         BufferedWriter writer = new BufferedWriter(file);
 
         int index = 0;
@@ -299,29 +299,27 @@ public class Banco {
     }
 
     //Metodo para cargar usuarios desde archivo
-   public void cargarUsuarios() throws IOException {
-        FileReader file = new FileReader("usuarios.txt");
+   public void cargarGerentes() throws IOException {
+        FileReader file = new FileReader("gerentes.txt");
         BufferedReader reader = new BufferedReader(file);
         String linea;
 
         while ((linea = reader.readLine()) != null) {
             Map <String, Object> data = Utils.convertStringToJsonObject(linea);
 
-            Usuarios usuario = new Usuarios(
+            Gerente gerente = new Gerente(
                     String.valueOf(data.get("idUsuario")),
                     String.valueOf(data.get("nombre")),
                     String.valueOf(data.get("apellido")),
                     String.valueOf(data.get("curp")),
                     String.valueOf(data.get("RFC")),
                     String.valueOf(data.get("direccion")),
-                    Rol.valueOf(data.get("rol").toString()),
-                    String.valueOf(data.get("usuario")),
-                    String.valueOf(data.get("contrasena"))
+                    Double.parseDouble(String.valueOf(data.get("salario"))),
+                    String.valueOf(data.get("contrasenia")),
+                    String.valueOf(data.get("usuario"))
             );
-            usuario.setUsuario(String.valueOf(data.get("Usuario")));
-            usuario.setContrasenia(String.valueOf(data.get("contrasena")));
 
-            this.usuariosRegistrados.add(usuario);
+            this.usuariosRegistrados.add(gerente);
         }
         reader.close();
     }
@@ -342,16 +340,37 @@ public class Banco {
                     String.valueOf(data.get("RFC")),
                     String.valueOf(data.get("direccion")),
                     Double.parseDouble(String.valueOf(data.get("salario"))),
-                    String.valueOf(data.get("idUsuario")),
-                    String.valueOf(data.get("contrasena"))
+                    String.valueOf(data.get("contrasenia")),
+                    String.valueOf(data.get("usuario"))
             );
-            empleado.setUsuario(String.valueOf(data.get("Usuario")));
-            empleado.setContrasenia(String.valueOf(data.get("contrasena")));
 
            this.listaEmpleados.add(empleado);
+           this.usuariosRegistrados.add(empleado);
         }
 
         reader.close();
+    }
+
+    public void generarGerente() throws IOException {
+        boolean seDebeGenerarGerente = true;
+
+        try {
+            FileReader file = new FileReader("gerentes.txt");
+            BufferedReader reader = new BufferedReader(file);
+            String linea;
+
+            if (reader.readLine() != null) {
+                seDebeGenerarGerente = false;
+            }
+        } catch (IOException e) {}
+
+        if (seDebeGenerarGerente) {
+            String cId = this.generarIdGerente("Victor", "Lopez");
+            Gerente cGerente= new Gerente(cId,"Victor","Lopez","RACW050729MMCSHNA2","ihjghfhgj","ghfgfhjhj", 85789.900,"123","vic123");
+            this.registrarUsuario(cGerente);
+
+            this.guardarGerentes();
+        }
     }
 
     public class InicioSesionException extends Exception { public InicioSesionException(String mensaje) { super(mensaje); } }
@@ -544,15 +563,12 @@ public class Banco {
     }
 
 
-
-
     public void contratarEmpleado(Empleados empleado) {
         listaEmpleados.add(empleado);
         usuariosRegistrados.add(empleado);
 
         try {
             guardarEmpleados();
-            guardarUsuarios();
         } catch (IOException e) {
             System.out.println("Error al guardar los empleados: " + e.getMessage());
         }
@@ -574,9 +590,6 @@ public class Banco {
     public String generarIdEmpleado(String nombre, String apellido) {
         return "EMP" + nombre.substring(0, 2).toUpperCase() + apellido.substring(0, 2).toUpperCase() + (listaEmpleados.size() + 1);
     }
-
-
-
 
     public void modificarEmpleado(Banco banco, Scanner scanner) {
         System.out.print("\nIngrese el ID o nombre del empleado a modificar: ");
