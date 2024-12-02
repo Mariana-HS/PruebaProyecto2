@@ -3,11 +3,12 @@ package menus.menuCliente;
 import tarjetas.TarjetaDebito;
 import usuarios.cliente.Cliente;
 
+import java.io.IOException;
 import java.util.Scanner;
 import banco.Banco;
 public class MenuCliente {
 
-    public void mostrarMenuCliente(Cliente clienteEnSesion, Banco banco) {
+    public void mostrarMenuCliente(Cliente clienteEnSesion, Banco banco)  throws IOException {
         Scanner scanner = new Scanner(System.in);
         int opcion = 0;
 
@@ -15,17 +16,17 @@ public class MenuCliente {
 
         while (opcion != 5) {
             System.out.println("** BIENVENIDO " + clienteEnSesion.getNombre() + " **");
-            System.out.println("1. Realizar retiro"); //Unificar con el metodo de consultarYActualizarEstadoDeCuenta
-            System.out.println("2. Realizar un depósito");
-            System.out.println("3. Consultar movimientos");
-            System.out.println("4. Consultar ultimos movimientos");
-            System.out.println("5. Salir");
+            System.out.println("1. Realizar retiro o depósito");
+            System.out.println("2. Consultar movimientos");
+            System.out.println("3. Consultar ultimos movimientos");
+            System.out.println("4. Salir");
             opcion = scanner.nextInt();
             scanner.nextLine();
 
             switch (opcion) {
                 case 1:
-
+                    System.out.println("Realizar retiro o déposito");
+                    banco.consultarYActualizarEstadoCuentas(banco, scanner);
                     break;
                 case 2:
 
