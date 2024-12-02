@@ -24,15 +24,11 @@ public class Menu {
     public void login() {
         this.cargarGerentes(banco);
         this.cargarEmpleados(banco);
-        //this.cargarClientes(banco);
+        this.cargarClientes(banco);
         this.generarGerente(banco);
+        this.generarTarjetasDebito(banco);
 
-        /*try {
-            /Banco.cargarUsuarios();
-            Cargar usuarios desde archivo
-        } catch (IOException | ClassNotFoundException e) {
-            System.out.println("Error al cargar los usuarios: " + e.getMessage());
-        }*/
+
         int intentosMaximos = 5;
         int intentosUsuario = 0;
 
@@ -95,7 +91,6 @@ public class Menu {
         }
     }
 
-    /*
     public void cargarClientes(Banco banco){
         try {
             banco.cargarClientes();
@@ -103,11 +98,18 @@ public class Menu {
 
         }
     }
-    */
 
     public void generarGerente(Banco banco){
         try {
             banco.generarGerente();
+        } catch (IOException e) {
+
+        }
+    }
+
+    public void generarTarjetasDebito(Banco banco){
+        try {
+            banco.cargarTarjetasDebito();
         } catch (IOException e) {
 
         }

@@ -70,7 +70,7 @@ public class Usuarios {
     }
 
     public void setUsuario(String usuario) {
-        usuario = usuario;
+        this.usuario = usuario;
     }
 
     public void setNombre(String nombre) {

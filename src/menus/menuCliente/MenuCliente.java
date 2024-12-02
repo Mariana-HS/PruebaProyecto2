@@ -11,9 +11,11 @@ public class MenuCliente {
         Scanner scanner = new Scanner(System.in);
         int opcion = 0;
 
+        TarjetaDebito tarjetaDebito = banco.buscarTarjetaDebitoParaEliminar(clienteEnSesion.getIdUsuario()); //Utilziamos ese metodo debido a que utiliza el id para buscar
+
         while (opcion != 5) {
             System.out.println("** BIENVENIDO " + clienteEnSesion.getNombre() + " **");
-            System.out.println("1. Realizar retiro");
+            System.out.println("1. Realizar retiro"); //Unificar con el metodo de consultarYActualizarEstadoDeCuenta
             System.out.println("2. Realizar un depósito");
             System.out.println("3. Consultar movimientos");
             System.out.println("4. Consultar ultimos movimientos");
@@ -30,15 +32,16 @@ public class MenuCliente {
                     break;
                 case 3:
                     System.out.println("CONSULTAR MOVIMIENTOS");
-                    System.out.println("Ingresa la tarjeta de debito");
-                    TarjetaDebito tarjetaDebito = clienteEnSesion.getTarjetaDebito();
+
+                    System.out.println("Su tarjeta tiene numero: " + (tarjetaDebito.getNumeroTarjeta()));
+                    System.out.println("Con CVV: " + (tarjetaDebito.getCvv()));
+
                     banco.historialMovimientosTarjetaDeDebito(tarjetaDebito);
                     break;
                     case 4:
                         System.out.println("CONSULTAR ULTIMOS MOVIMIENTOS");
-                        System.out.println("Ingresa la tarjeta de debito");
-                        TarjetaDebito tarjetaDebito1 = clienteEnSesion.getTarjetaDebito();
-                        banco.obtenerUltimoMovimiento(tarjetaDebito1);
+                        System.out.println("Su tarjeta tiene numero: " + (tarjetaDebito.getNumeroTarjeta()));
+                        System.out.println("Con CVV: " + (tarjetaDebito.getCvv()));
 
                         break;
                         case 5:

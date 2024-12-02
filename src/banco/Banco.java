@@ -1,6 +1,5 @@
 package banco;
 
-import resourses.Rol;
 import tarjetas.TarjetaDebito;
 import usuarios.cliente.Cliente;
 import usuarios.Usuarios;
@@ -17,13 +16,13 @@ import resourses.Utils;
 public class Banco {
     Scanner scanner = new Scanner(System.in);
     Random random = new Random();
-    ArrayList<TarjetaDebito> tarjetasDebito = new ArrayList<>();
     private ArrayList<Usuarios> usuariosRegistrados = new ArrayList<Usuarios>();
-    public static List<Cliente> clientes = new ArrayList<>();
+    public ArrayList<Cliente> clientes = new ArrayList<>();
     public ArrayList<Empleados> listaEmpleados = new ArrayList<>();
+    public ArrayList<TarjetaDebito> listaTarjetasDebito = new ArrayList<>();
 
 
-    public void cargarData(){
+    public void cargarData() {
 
     }
 
@@ -31,6 +30,7 @@ public class Banco {
     //Generar id cliente
     LocalDateTime fecha = LocalDateTime.now();
     private Set<String> idsGenerados = new HashSet<>();
+
     public String generarIdCliente(String nombreCliente, String apellidoCliente) {
         char letraUno = nombreCliente.charAt(0);
         char letraDos = apellidoCliente.charAt(apellidoCliente.length() - 1);
@@ -48,25 +48,27 @@ public class Banco {
         idsGenerados.add(idCliente);  // Guardamos el nuevo ID
         return idCliente;
     }
-        public String generarIdGerente(String nombre, String apellido) {
 
-            char letraUno = nombre.charAt(0);
-            char letraDos = apellido.charAt(apellido.length() - 1);
 
-            int numeroAleatorio = ThreadLocalRandom.current().nextInt(1, 3000);
+    public String generarIdGerente(String nombre, String apellido) {
 
-            int diaActual = fecha.getDayOfMonth();
+        char letraUno = nombre.charAt(0);
+        char letraDos = apellido.charAt(apellido.length() - 1);
 
-            String idGerente = String.format("GER-%c%c-%d%d", letraUno, letraDos, numeroAleatorio, diaActual);
+        int numeroAleatorio = ThreadLocalRandom.current().nextInt(1, 3000);
 
-            while (idsGenerados.contains(idGerente)) {
-                numeroAleatorio = ThreadLocalRandom.current().nextInt(1, 3000);
-                idGerente = String.format("GER-%c%c-%d%d", letraUno, letraDos, numeroAleatorio, diaActual);
-            }
+        int diaActual = fecha.getDayOfMonth();
 
-            idsGenerados.add(idGerente);
-            return idGerente;
+        String idGerente = String.format("GER-%c%c-%d%d", letraUno, letraDos, numeroAleatorio, diaActual);
+
+        while (idsGenerados.contains(idGerente)) {
+            numeroAleatorio = ThreadLocalRandom.current().nextInt(1, 3000);
+            idGerente = String.format("GER-%c%c-%d%d", letraUno, letraDos, numeroAleatorio, diaActual);
         }
+
+        idsGenerados.add(idGerente);
+        return idGerente;
+    }
 
     //Validación de la curp
     public boolean validacionCurp(String curp) {
@@ -134,21 +136,23 @@ public class Banco {
         return rfc;
     }
 
+
     // Métodos Relacionados con Tarjeta de Debito
-    public String generarNumeroTarjeta(){
-        int primeraMitad = ThreadLocalRandom.current().nextInt(1,99999999);
-        int segundaMitad = ThreadLocalRandom.current().nextInt(1,99999999);
+    public String generarNumeroTarjeta() {
+        int primeraMitad = ThreadLocalRandom.current().nextInt(1111, 9999);
+        int segundaMitad = ThreadLocalRandom.current().nextInt(1111, 9999);
 
         String numeroTarjeta = (Integer.toString(primeraMitad) + Integer.toString(segundaMitad));
         return numeroTarjeta;
     }
 
-    public int cvv(){
-        int cvv = ThreadLocalRandom.current().nextInt(1,999);
+
+    public int cvv() {
+        int cvv = ThreadLocalRandom.current().nextInt(1, 999);
         return cvv;
     }
 
-    public LocalDate fechaRegistro(){
+    public LocalDate fechaRegistro() {
         LocalDate fechaActual = LocalDate.now();
         int year = fechaActual.getYear();
         int month = fechaActual.getMonthValue();
@@ -157,36 +161,35 @@ public class Banco {
         return fecha;
     }
 
-    public LocalDate fechaVencimiento(){
+    public LocalDate fechaVencimiento() {
         fechaRegistro();
-        int year = fechaRegistro().getYear() + 5;
-        LocalDate fechaVencimiento = fechaRegistro().plusYears(year);
+        LocalDate fechaVencimiento = fechaRegistro().plusYears(5);
         return fechaVencimiento;
     }
 
-   public void agregarTarjetaDebito(TarjetaDebito tarjetaDebito){
-        tarjetasDebito.add(tarjetaDebito);
-   }
+    public void agregarTarjetaDebito(TarjetaDebito tarjetaDebito) {
+        listaTarjetasDebito.add(tarjetaDebito);
+    }
 
-   public boolean validarExistenciaNumeroTarjeta(String numeroTarjeta){
-        for(TarjetaDebito tarjetaDebito: tarjetasDebito){
-            if (tarjetaDebito.getNumeroTarjeta().equals(numeroTarjeta)){
+    public boolean validarExistenciaNumeroTarjeta(String numeroTarjeta) {
+        for (TarjetaDebito tarjetaDebito : listaTarjetasDebito) {
+            if (tarjetaDebito.getNumeroTarjeta().equals(numeroTarjeta)) {
                 return false;
             }
         }
         return true;
-   }
+    }
 
-   public boolean validarExistenciaCVV(int cvv){
-        for (TarjetaDebito tarjetaDebito: tarjetasDebito){
-            if (tarjetaDebito.getCvv() == cvv){
+    public boolean validarExistenciaCVV(int cvv) {
+        for (TarjetaDebito tarjetaDebito : listaTarjetasDebito) {
+            if (tarjetaDebito.getCvv() == cvv) {
                 return false;
             }
         }
         return true;
-   }
+    }
 
-   public TarjetaDebito crearTarjetaDebito(){
+    public TarjetaDebito crearTarjetaDebito(String idCliente) {
         String numeroTarjeta = generarNumeroTarjeta();
         int cvv = cvv();
         LocalDate fechaRegistro = fechaRegistro();
@@ -195,15 +198,67 @@ public class Banco {
             numeroTarjeta = generarNumeroTarjeta();
             cvv = cvv();
         }
-        TarjetaDebito tarjetaDebito = new TarjetaDebito(0,numeroTarjeta,fechaRegistro,cvv,fechaVencimiento);
+        TarjetaDebito tarjetaDebito = new TarjetaDebito(0, numeroTarjeta, fechaRegistro, cvv, fechaVencimiento, idCliente);
         agregarTarjetaDebito(tarjetaDebito);
         return tarjetaDebito;
-   }
+    }
 
-   public void historialMovimientosTarjetaDeDebito(TarjetaDebito tarjetaDebito){
-       LocalDateTime fechaMovimiento = LocalDateTime.now();
-       tarjetaDebito.getMovimientos().add(fechaMovimiento);
-   }
+    public void registrarTarjetaDebito(TarjetaDebito tarjetaDebito) {
+        listaTarjetasDebito.add(tarjetaDebito);
+
+        try {
+            guardarTarjetasDebito();
+        } catch (IOException e) {
+            System.out.println("Error al guardar las tarjetas: " + e.getMessage());
+        }
+    }
+
+    public void guardarTarjetasDebito() throws IOException {
+        FileWriter file = new FileWriter("tarjetasDebito.txt");
+        BufferedWriter writer = new BufferedWriter(file);
+
+        int index = 0;
+        for (TarjetaDebito tarjetaDebito : listaTarjetasDebito) {
+            if (index > 0) {
+                writer.write("\n");
+            }
+
+            writer.write(tarjetaDebito.toString());
+            index++;
+        }
+
+        writer.close();
+    }
+
+    public void cargarTarjetasDebito() throws IOException {
+        FileReader file = new FileReader("tarjetasDebito.txt");
+        BufferedReader reader = new BufferedReader(file);
+        String line;
+
+        while ((line = reader.readLine()) != null) {
+            Map<String, Object> data = Utils.convertStringToJsonObject(line);
+
+            TarjetaDebito tarjetaDebito = new TarjetaDebito(
+                    Double.parseDouble(String.valueOf(data.get("saldo"))),
+                    String.valueOf((data.get("numeroTarjeta"))),
+                    LocalDate.parse(String.valueOf(data.get("fechaRegistro"))),
+                    Integer.parseInt(String.valueOf(data.get("cvv"))),
+                    LocalDate.parse(String.valueOf(data.get("fechaVencimiento"))),
+                    String.valueOf(data.get("idCliente"))
+
+            );
+
+            this.listaTarjetasDebito.add(tarjetaDebito);
+
+        }
+
+        reader.close();
+    }
+
+    public void historialMovimientosTarjetaDeDebito(TarjetaDebito tarjetaDebito) {
+        LocalDateTime fechaMovimiento = LocalDateTime.now();
+        tarjetaDebito.getMovimientos().add(fechaMovimiento);
+    }
 
 
     public void obtenerUltimoMovimiento(TarjetaDebito tarjetaDebito) {
@@ -216,36 +271,67 @@ public class Banco {
     }
 
 
+    public void registrarCliente(Cliente cliente) {
+        clientes.add(cliente);
+        usuariosRegistrados.add(cliente);
 
-
-
-
-    //Registrar Cliente
-
-    public static List<Cliente> leer() throws FileNotFoundException, IOException,ClassNotFoundException {
-        File archivo = new File("clientes.txt");
-        if (!archivo.exists()) {
-            return new ArrayList<>();
-        }
-        try (ObjectInputStream s = new ObjectInputStream(new FileInputStream(archivo))) {
-            return (List<Cliente>) s.readObject();
+        try {
+            guardarClientes();
+        } catch (IOException e) {
+            System.out.println("Error al guardar los clientes: " + e.getMessage());
         }
     }
-    public static void registrarCliente(String id,String nombre, String apellido, String curp, String RFC, String direccion, LocalDate fechaRegistro, String usuario, String contrasenia) {
-        for(Cliente p : clientes) {
-            if(p.getNombre().equals(nombre) && p.getCurp() == curp) {
-                System.out.println("Usuario existente. No se puede registrar.");
-                return;
+
+
+    public void guardarClientes() throws IOException {
+        FileWriter file = new FileWriter("clientes.txt");
+        BufferedWriter writer = new BufferedWriter(file);
+
+        int index = 0;
+        for (Cliente cliente : clientes) {
+            if (index > 0) {
+                writer.write("\n");
             }
+
+            writer.write(cliente.toString());
+            index++;
         }
-        clientes.add(new Cliente(id,nombre,apellido,curp, RFC,direccion,fechaRegistro, usuario, contrasenia));
-        System.out.println("Persona agregada exitosamente.");
+
+        writer.close();
     }
 
-    // Lista y métodos para manejar usuarios
+
+    public void cargarClientes() throws IOException {
+        FileReader file = new FileReader("clientes.txt");
+        BufferedReader reader = new BufferedReader(file);
+        String line;
+
+        while ((line = reader.readLine()) != null) {
+            Map<String, Object> data = Utils.convertStringToJsonObject(line);
+
+            Cliente cliente = new Cliente(
+                    String.valueOf(data.get("idUsuario")),
+                    String.valueOf(data.get("nombre")),
+                    String.valueOf(data.get("apellido")),
+                    String.valueOf(data.get("curp")),
+                    String.valueOf(data.get("RFC")),
+                    String.valueOf(data.get("direccion")),
+                    LocalDate.parse(String.valueOf(data.get("fechaRegistro"))),
+                    String.valueOf(data.get("contrasenia")),
+                    String.valueOf(data.get("usuario"))
+            );
+
+            this.clientes.add(cliente);
+            this.usuariosRegistrados.add(cliente);
+        }
+
+        reader.close();
+    }
 
     // Metodo para registrar un usuario
-    public void registrarUsuario(Usuarios usuario) { usuariosRegistrados.add(usuario); }
+    public void registrarUsuario(Usuarios usuario) {
+        usuariosRegistrados.add(usuario);
+    }
 
     // Metodo para validar el inicio de sesion
     public Usuarios validarInicioDeSesion(String usuario, String contrasenia) throws InicioSesionException {
@@ -257,11 +343,15 @@ public class Banco {
                 } else if (u instanceof Empleados) {
                     System.out.println("¡Bienvenido, Empleado!");
                     return u;
+                } else if (u instanceof Cliente) {
+                    System.out.println("Bienvenido, Cliente!");
+                    return u;
                 }
             }
         }
         throw new InicioSesionException("Usuario o contraseña incorrectos.");
     }
+
     // Metodo para guardar usuarios en archivo
     public void guardarGerentes() throws IOException {
         FileWriter file = new FileWriter("gerentes.txt");
@@ -299,13 +389,13 @@ public class Banco {
     }
 
     //Metodo para cargar usuarios desde archivo
-   public void cargarGerentes() throws IOException {
+    public void cargarGerentes() throws IOException {
         FileReader file = new FileReader("gerentes.txt");
         BufferedReader reader = new BufferedReader(file);
         String linea;
 
         while ((linea = reader.readLine()) != null) {
-            Map <String, Object> data = Utils.convertStringToJsonObject(linea);
+            Map<String, Object> data = Utils.convertStringToJsonObject(linea);
 
             Gerente gerente = new Gerente(
                     String.valueOf(data.get("idUsuario")),
@@ -325,7 +415,7 @@ public class Banco {
     }
 
     public void cargarEmpleados() throws IOException {
-        FileReader file  = new FileReader("empleados.txt");
+        FileReader file = new FileReader("empleados.txt");
         BufferedReader reader = new BufferedReader(file);
         String line;
 
@@ -344,8 +434,8 @@ public class Banco {
                     String.valueOf(data.get("usuario"))
             );
 
-           this.listaEmpleados.add(empleado);
-           this.usuariosRegistrados.add(empleado);
+            this.listaEmpleados.add(empleado);
+            this.usuariosRegistrados.add(empleado);
         }
 
         reader.close();
@@ -362,52 +452,75 @@ public class Banco {
             if (reader.readLine() != null) {
                 seDebeGenerarGerente = false;
             }
-        } catch (IOException e) {}
+        } catch (IOException e) {
+        }
 
         if (seDebeGenerarGerente) {
             String cId = this.generarIdGerente("Victor", "Lopez");
-            Gerente cGerente= new Gerente(cId,"Victor","Lopez","RACW050729MMCSHNA2","ihjghfhgj","ghfgfhjhj", 85789.900,"123","vic123");
+            Gerente cGerente = new Gerente(cId, "Victor", "Lopez", "RACW050729MMCSHNA2", "ihjghfhgj", "ghfgfhjhj", 85789.900, "123", "vic123");
             this.registrarUsuario(cGerente);
 
             this.guardarGerentes();
         }
     }
 
-    public class InicioSesionException extends Exception { public InicioSesionException(String mensaje) { super(mensaje); } }
-
-
-    public void modificarCliente(String nombre1) {
-        for (Cliente cliente : clientes) {
-            if (cliente.getNombre().equalsIgnoreCase(nombre1)) {
-                System.out.println("\n Modificar nombre: " + nombre1);
-
-                System.out.print("Nuevo nombre: ");
-                cliente.setNombre(scanner.nextLine());
-
-                System.out.print("Nuevos apellidos: ");
-                cliente.setApellido(scanner.nextLine());
-
-                System.out.print("Nueva direccion: ");
-                cliente.setDireccion(scanner.nextLine());
-
-                System.out.println("Cliente modificado exitosamente.");
-                return;
-            }
+    public class InicioSesionException extends Exception {
+        public InicioSesionException(String mensaje) {
+            super(mensaje);
         }
-        System.out.println("Película no encontrada.");
     }
 
-  /*  public Cliente buscarCliente(String idCliente1) {
-        return cliente.get(idCliente1);
-    } */
 
-    public void consultarYActualizarEstadoCuentas(Banco banco, Scanner scanner) {
+    public void modificarCliente(String idCliente) throws IOException {
+        Cliente cliente = buscarCliente(idCliente);
+        if (cliente == null) {
+            System.out.println("Cliente no encontrado");
+        } else {
+            System.out.println("Ingrese el nuevo nombre del cliente");
+            String nombre = scanner.nextLine();
+            cliente.setNombre(nombre);
+
+            System.out.println("Ingrese el nuevo apellido del cliente");
+            String apellido = scanner.nextLine();
+            cliente.setApellido(apellido);
+
+            System.out.println("Ingrese el nuevo usuario");
+            String usuario = scanner.nextLine();
+            cliente.setUsuario(usuario);
+
+            System.out.println("Ingrese la nueva contrasenia");
+            String contrasenia = scanner.nextLine();
+            cliente.setContrasenia(contrasenia);
+
+            guardarClientes();
+            System.out.println("Se ha cambiado los datos correctamente");
+
+        }
+    }
+
+    public Cliente buscarCliente(String idCliente) {
+        for (Cliente cliente : clientes) {
+            if (cliente.getIdUsuario().equals(idCliente)) {
+                return cliente;
+            }
+        }
+        return null;
+    }
+
+    public void consultarYActualizarEstadoCuentas(Banco banco, Scanner scanner) throws IOException {
+        scanner.nextLine();
         System.out.println("Ingrese el número de tarjeta de débito del cliente:");
         String numeroTarjeta = scanner.nextLine();
 
-        TarjetaDebito tarjetaDebito = buscarTarjetaDebito(banco, numeroTarjeta);
+        TarjetaDebito tarjetaDebito = buscarTarjetaDebito(numeroTarjeta);
 
-        if (tarjetaDebito != null) {
+        while (tarjetaDebito == null) {
+            System.out.println("Tarjeta no encontrada");
+            System.out.println("Ingrese el numero de tarjeta de debito");
+            numeroTarjeta = scanner.nextLine();
+            tarjetaDebito = buscarTarjetaDebito(numeroTarjeta);
+        }
+
             System.out.println("Saldo actual: $" + tarjetaDebito.getSaldo());
             System.out.println("Movimientos recientes:");
             tarjetaDebito.mostrarMovimientos();
@@ -427,28 +540,38 @@ public class Banco {
                     tarjetaDebito.depositar(montoDeposito);
                     registrarMovimiento(tarjetaDebito);
                     System.out.println("Depósito exitoso. Saldo actual: $" + tarjetaDebito.getSaldo());
-                    break;
+                    guardarTarjetasDebito();
+                    return;
                 case 2:
                     System.out.println("Ingrese el monto a retirar:");
                     double montoRetiro = scanner.nextDouble();
                     tarjetaDebito.retirar(montoRetiro);
                     registrarMovimiento(tarjetaDebito);
                     System.out.println("Retiro realizado. Saldo actual: $" + tarjetaDebito.getSaldo());
-                    break;
+                    guardarTarjetasDebito();
+                    return;
                 case 3:
                     System.out.println("Regresando al menú...");
-                    break;
+                    return;
                 default:
                     System.out.println("Opción no válida.");
             }
-        } else {
-            System.out.println("Tarjeta de débito no encontrada.");
         }
+
+
+    public TarjetaDebito buscarTarjetaDebito(String numeroTarjeta) {
+        for (TarjetaDebito tarjeta : listaTarjetasDebito) {
+            if (tarjeta.getNumeroTarjeta().equals(numeroTarjeta)) {
+                System.out.println("Tarjeta: " + tarjeta.getNumeroTarjeta());
+                return tarjeta;
+            }
+        }
+        return null;
     }
 
-    public TarjetaDebito buscarTarjetaDebito(Banco banco, String numeroTarjeta) {
-        for (TarjetaDebito tarjeta : banco.tarjetasDebito) {
-            if (tarjeta.getNumeroTarjeta().equals(numeroTarjeta)) {
+    public TarjetaDebito buscarTarjetaDebitoParaEliminar(String idCliente) {
+        for (TarjetaDebito tarjeta : listaTarjetasDebito) {
+            if (tarjeta.getIdCliente().equals(idCliente)) {
                 return tarjeta;
             }
         }
@@ -460,29 +583,17 @@ public class Banco {
     }
 
 
-    public void desactivarCuenta(TarjetaDebito tarjeta) {
-        tarjeta.setEstado(false);
-        System.out.println("Cuenta desactivada correctamente.");
-    }
-
-    public void desactivarCuentaCliente(Banco banco, Scanner scanner) {
-        System.out.println("Ingrese el número de tarjeta de débito del cliente a desactivar:");
-        String numeroTarjeta = scanner.nextLine();
-
-        TarjetaDebito tarjetaDebito = buscarTarjetaDebito(banco, numeroTarjeta);
-
-        if (tarjetaDebito != null) {
-            System.out.println("¿Está seguro de que desea desactivar esta cuenta? (S/N)");
-            String confirmacion = scanner.nextLine();
-
-            if (confirmacion.equalsIgnoreCase("S")) {
-                banco.desactivarCuenta(tarjetaDebito);
-                System.out.println("La cuenta ha sido desactivada exitosamente.");
-            } else {
-                System.out.println("Operación cancelada.");
-            }
+    public void desactivarCuentaCliente(String idCliente) throws IOException {
+        Cliente cliente = buscarCliente(idCliente);
+        TarjetaDebito tarjetaDebito = buscarTarjetaDebitoParaEliminar(idCliente);
+        if (cliente == null) {
+            System.out.println("Cliente no encontrado");
         } else {
-            System.out.println("Tarjeta de débito no encontrada.");
+            clientes.remove(cliente);
+            listaTarjetasDebito.remove(tarjetaDebito);
+            guardarClientes();
+            guardarTarjetasDebito();
+            System.out.println("Cuenta eliminada");
         }
     }
 
@@ -499,7 +610,7 @@ public class Banco {
                 registrarEmpleado(banco, scanner);
                 break;
             case 2:
-                despedirEmpleado(banco, scanner);
+                opcionDespedirEmpleado(banco, scanner);
                 break;
             default:
                 System.out.println("Opción no válida.");
@@ -517,9 +628,6 @@ public class Banco {
         System.out.print("Ingrese el CURP: ");
         String curp = scanner.nextLine();
 
-        System.out.print("Ingrese el RFC: ");
-        String rfc = scanner.nextLine();
-
         System.out.print("Ingrese la dirección: ");
         String direccion = scanner.nextLine();
 
@@ -535,31 +643,28 @@ public class Banco {
 
         String id = banco.generarIdEmpleado(nombre, apellido);
 
-        Empleados nuevoEmpleado = new Empleados(id, nombre, apellido, curp, rfc, direccion, salario, contrasena, usuario);
+        Empleados nuevoEmpleado = new Empleados(id, nombre, apellido, curp, generarRFCDesdeCURP(curp), direccion, salario, contrasena, usuario);
         banco.contratarEmpleado(nuevoEmpleado);
 
         System.out.println("¡Empleado contratado exitosamente!");
     }
 
-    private void despedirEmpleado(Banco banco, Scanner scanner) {
-        System.out.print("\nIngrese el ID o nombre del empleado a despedir: ");
-        String identificador = scanner.nextLine();
+    private void opcionDespedirEmpleado(Banco banco, Scanner scanner) throws IOException {
+        System.out.print("\nIngrese el ID  del empleado a despedir: ");
+        String id = scanner.nextLine();
 
-        Empleados empleado = banco.buscarEmpleado(identificador);
+        Empleados empleado = banco.buscarEmpleado(id);
 
-        if (empleado != null) {
-            System.out.println("¿Está seguro de que desea despedir a " + empleado.getNombre() + " " + empleado.getApellido() + "? (S/N)");
-            String confirmacion = scanner.nextLine();
-
-            if (confirmacion.equalsIgnoreCase("S")) {
-                banco.despedirEmpleado(empleado);
-                System.out.println("Empleado despedido exitosamente.");
-            } else {
-                System.out.println("Operación cancelada.");
-            }
+        if (empleado == null) {
+            System.out.println("Empleado no encontrado");
         } else {
-            System.out.println("Empleado no encontrado.");
+            listaEmpleados.remove(empleado);
+            guardarEmpleados();
+            System.out.println("Empleado depedido :c");
         }
+
+
+
     }
 
 
@@ -574,28 +679,24 @@ public class Banco {
         }
     }
 
-    public Empleados buscarEmpleado(String identificador) {
+    public Empleados buscarEmpleado(String idEmpleado) {
         for (Empleados empleado : listaEmpleados) {
-            if (empleado.getIdUsuario().equals(identificador) || empleado.getNombre().equalsIgnoreCase(identificador)) {
+            if (empleado.getIdUsuario().equals(idEmpleado)) {
                 return empleado;
             }
         }
         return null;
     }
 
-    public void despedirEmpleado(Empleados empleado) {
-        listaEmpleados.remove(empleado);
-    }
-
     public String generarIdEmpleado(String nombre, String apellido) {
         return "EMP" + nombre.substring(0, 2).toUpperCase() + apellido.substring(0, 2).toUpperCase() + (listaEmpleados.size() + 1);
     }
 
-    public void modificarEmpleado(Banco banco, Scanner scanner) {
+    public void modificarEmpleado(Banco banco, Scanner scanner) throws IOException {
         System.out.print("\nIngrese el ID o nombre del empleado a modificar: ");
-        String identificador = scanner.nextLine();
+        String id = scanner.nextLine();
 
-        Empleados empleado = banco.buscarEmpleado(identificador);
+        Empleados empleado = banco.buscarEmpleado(id);
 
         if (empleado != null) {
             System.out.println("\nEmpleado encontrado: " + empleado.getNombre() + " " + empleado.getApellido());
@@ -607,65 +708,53 @@ public class Banco {
 
             int opcion = scanner.nextInt();
             scanner.nextLine();
+            while (opcion !=4) {
+                switch (opcion) {
+                    case 1:
+                        System.out.print("Ingrese el nuevo salario: ");
+                        double nuevoSalario = scanner.nextDouble();
+                        empleado.setSalario(nuevoSalario);
+                        guardarEmpleados();
+                        System.out.println("Salario actualizado exitosamente.");
 
-            switch (opcion) {
-                case 1:
-                    System.out.print("Ingrese el nuevo salario: ");
-                    double nuevoSalario = scanner.nextDouble();
-                    empleado.setSalario(nuevoSalario);
-                    System.out.println("Salario actualizado exitosamente.");
-                    break;
-                case 2:
-                    System.out.print("Ingrese la nueva dirección: ");
-                    String nuevaDireccion = scanner.nextLine();
-                    empleado.setDireccion(nuevaDireccion);
-                    System.out.println("Dirección actualizada exitosamente.");
-                    break;
-                case 3:
-                    System.out.print("Ingrese el nuevo nombre de usuario: ");
-                    String nuevoUsuario = scanner.nextLine();
-                    System.out.print("Ingrese la nueva contraseña: ");
-                    String nuevaContrasena = scanner.nextLine();
-                    empleado.setUsuario(nuevoUsuario);
-                    empleado.setContrasenia(nuevaContrasena);
-                    System.out.println("Usuario y contraseña actualizados exitosamente.");
-                    break;
-                case 4:
-                    System.out.println("Volviendo al menú principal...");
-                    return;
-                default:
-                    System.out.println("Opción no válida.");
+                        break;
+                    case 2:
+                        System.out.print("Ingrese la nueva dirección: ");
+                        String nuevaDireccion = scanner.nextLine();
+                        empleado.setDireccion(nuevaDireccion);
+                        guardarEmpleados();
+                        System.out.println("Dirección actualizada exitosamente.");
+                        break;
+                    case 3:
+                        System.out.print("Ingrese el nuevo nombre de usuario: ");
+                        String nuevoUsuario = scanner.nextLine();
+                        System.out.print("Ingrese la nueva contraseña: ");
+                        String nuevaContrasena = scanner.nextLine();
+                        empleado.setUsuario(nuevoUsuario);
+                        empleado.setContrasenia(nuevaContrasena);
+                        guardarEmpleados();
+                        System.out.println("Usuario y contraseña actualizados exitosamente.");
+                        break;
+                    case 4:
+                        System.out.println("Volviendo al menú principal...");
+                        return;
+                    default:
+                        System.out.println("Opción no válida.");
+                }
             }
         } else {
             System.out.println("Empleado no encontrado.");
         }
     }
 
-    public List<Cliente> obtenerClientes() {
-        return clientes;
-    }
-
-
-    public boolean eliminarCliente(String id) {
-        Cliente clienteAEliminar = null;
-
-        // Buscar al cliente por su ID
+    public void listarClientes() {
         for (Cliente cliente : clientes) {
-            if (cliente.getIdUsuario().equals(id)) {
-                clienteAEliminar = cliente;
-                break;
-            }
-        }
-        if (clienteAEliminar != null) {
-            clientes.remove(clienteAEliminar);
-            return true;
-        } else {
-            return false;
-        }
-
-
+            System.out.println(cliente.datos());
         }
     }
+}
+
+
 
 
 

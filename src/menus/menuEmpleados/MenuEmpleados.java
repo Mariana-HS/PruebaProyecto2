@@ -1,5 +1,6 @@
 package menus.menuEmpleados;
 
+import tarjetas.TarjetaDebito;
 import usuarios.cliente.Cliente;
 import usuarios.empleados.Empleados;
 import menus.menuCliente.MenuCliente;
@@ -12,7 +13,7 @@ import java.util.concurrent.RecursiveTask;
 
 public class MenuEmpleados {
 
-    public void mostrarMenuEmpleado(Empleados empleadosEnSesion, Banco banco) {
+    public void mostrarMenuEmpleado(Empleados empleadosEnSesion, Banco banco) throws IOException {
         Scanner scanner = new Scanner(System.in);
         int opcion = 0;
 
@@ -22,14 +23,16 @@ public class MenuEmpleados {
             System.out.println("1. Registrar cliente.");
             System.out.println("2. Listar clientes.");
             System.out.println("3. Eliminar cliente.");
-            System.out.println("4. Autorizar solicitud de tarjeta de crédito.");
-            System.out.println("5. Consultar saldo cliente.");
-            System.out.println("6. Activación o desactivación de tarjetas:");
+            System.out.println("4. Autorizar solicitud de tarjeta de crédito."); //Falta
+            System.out.println("5. Consultar saldo cliente.");// Falta
+            System.out.println("6. Activación o desactivación de tarjetas:"); //Falta
             System.out.println("7. Salir");
+            opcion = scanner.nextInt();
 
             switch (opcion) {
                 case 1:
                     System.out.println("REGISTRAR CLIENTE");
+                    scanner.nextLine();
                     System.out.println("Registrando cliente:");
 
                     System.out.println("Ingresa su nombre: ");
@@ -38,16 +41,6 @@ public class MenuEmpleados {
                     String apellidos = scanner.nextLine();
 
                     String id = banco.generarIdCliente(nombre, apellidos);
-
-                    System.out.println("Ingresa el año de nacimiento del cliente: ");
-                    int anio = scanner.nextInt();
-                    System.out.println("Ingresa su mes de nacimiento: ");
-                    int mes = scanner.nextInt();
-                    System.out.println("Ingresa su día de nacimiento: ");
-                    int dia = scanner.nextInt();
-
-                    LocalDate fechaNacimiento = LocalDate.of(anio, mes, dia);
-                    scanner.nextLine();
 
                     System.out.println("Ingresa su CURP: ");
                     String curpCliente = scanner.nextLine();
@@ -70,9 +63,14 @@ public class MenuEmpleados {
                     System.out.println("Ingresa su pontrasenia: ");
                     String contrasenia = scanner.nextLine();
 
+                    LocalDate fechaRegistro = LocalDate.now();
 
-                    Cliente cliente = new Cliente(id, nombre, apellidos, curpCliente,rfcCliente,direccionCliente,fechaNacimiento,usuario,contrasenia);
-                    Banco.registrarCliente(id, nombre,apellidos,curpCliente,rfcCliente,direccionCliente,fechaNacimiento,usuario,contrasenia);
+
+                    Cliente cliente = new Cliente(id, nombre, apellidos, curpCliente,rfcCliente,direccionCliente,fechaRegistro,usuario,contrasenia);
+                    banco.registrarCliente(cliente);
+                    TarjetaDebito tarjetaDebito = banco.crearTarjetaDebito(id);
+                    banco.registrarTarjetaDebito(tarjetaDebito);
+
 
                     System.out.println("Registro del cliente exitoso!");
 
@@ -80,13 +78,13 @@ public class MenuEmpleados {
 
                 case 2:
                     System.out.println("LISTAR CLIENTES");
-                   banco.obtenerClientes();
+                   banco.listarClientes();
                     break;
                     case 3:
                         System.out.println("ELIMINAR CLIENTE");
                         System.out.println("Ingrese el id del cliente a eliminar");
                         String idcliente= scanner.nextLine();
-                        banco.eliminarCliente(idcliente);
+                        banco.desactivarCuentaCliente(idcliente);
                         break;
                         case 4:
 
@@ -98,7 +96,6 @@ public class MenuEmpleados {
                                 break;
                                 case 6:
                                     System.out.println("ACTIVAR O DESACTIVAR TARJETAS");
-                                    banco.desactivarCuentaCliente(banco, scanner);
                                     break;
                                     case 7:
                                         return;

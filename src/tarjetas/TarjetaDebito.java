@@ -13,8 +13,9 @@ public class TarjetaDebito {
     public LocalDate fechaVencimiento;
     private ArrayList<LocalDateTime> movimientos = new ArrayList<>();
     private boolean estado;
+    public String idCliente;
 
-    public TarjetaDebito(double saldo, String numeroTarjeta, LocalDate fecha, int cvv, LocalDate fechaVencimiento) {
+    public TarjetaDebito(double saldo, String numeroTarjeta, LocalDate fecha, int cvv, LocalDate fechaVencimiento, String idCliente) {
         this.saldo = saldo;
         this.numeroTarjeta = numeroTarjeta;
         this.fechaDeRegistro = fecha;
@@ -22,6 +23,7 @@ public class TarjetaDebito {
         this.fechaVencimiento = fechaVencimiento;
         this.movimientos = new ArrayList<>(movimientos);
         this.estado = true;
+        this.idCliente = idCliente;
     }
 
     public boolean isEstado() {
@@ -35,6 +37,10 @@ public class TarjetaDebito {
 
     public double getSaldo() {
         return saldo;
+    }
+
+    public String getIdCliente() {
+        return idCliente;
     }
 
     public void depositar(double monto) {
@@ -77,5 +83,16 @@ public class TarjetaDebito {
                 System.out.println(movimiento);
             }
         }
+    }
+
+    public String toString(){
+        return "{" +
+                "\"saldo\":\"" + this.saldo + "\"," +
+                "\"numeroTarjeta\":\"" + this.numeroTarjeta + "\"," +
+                "\"fechaRegistro\":\"" + this.fechaDeRegistro + "\"," +
+                "\"cvv\":\"" + this.cvv + "\"," +
+                "\"fechaVencimiento\":\"" + this.fechaVencimiento + "\"," +
+                "\"idCliente\":\"" + this.idCliente + "\"," +
+                "}";
     }
 }
