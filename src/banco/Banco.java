@@ -236,7 +236,6 @@ public class Banco {
             cvv = cvv();
         }
         TarjetaDebito tarjetaDebito = new TarjetaDebito(0, numeroTarjeta, fechaRegistro, cvv, fechaVencimiento, idCliente);
-        agregarTarjetaDebito(tarjetaDebito);
         return tarjetaDebito;
     }
 
@@ -701,7 +700,7 @@ public class Banco {
     ///////METODOS DE CUENTAS/////////
     public void consultarYActualizarEstadoCuentas(Banco banco, Scanner scanner) throws IOException {
         scanner.nextLine();
-        System.out.println("Ingrese el número de tarjeta de débito del cliente:");
+        System.out.println("Ingrese el número de tarjeta de débito: ");
         String numeroTarjeta = scanner.nextLine();
 
         TarjetaDebito tarjetaDebito = buscarTarjetaDebito(numeroTarjeta);

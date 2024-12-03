@@ -70,6 +70,8 @@ public class MenuEmpleados {
                     banco.registrarCliente(cliente);
                     TarjetaDebito tarjetaDebito = banco.crearTarjetaDebito(id);
                     banco.registrarTarjetaDebito(tarjetaDebito);
+                    System.out.println("Su numero de tarjeta es: " + tarjetaDebito.getNumeroTarjeta());
+                    System.out.println("El CVV de su tarjeta es: " + tarjetaDebito.getCvv());
 
 
                     System.out.println("Registro del cliente exitoso!");

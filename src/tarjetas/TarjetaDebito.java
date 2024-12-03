@@ -1,5 +1,10 @@
 package tarjetas;
 
+import usuarios.Usuarios;
+
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -84,6 +89,25 @@ public class TarjetaDebito {
             }
         }
     }
+
+    public void guardarMovimientos() throws IOException {
+        FileWriter file = new FileWriter("movimientos.txt");
+        BufferedWriter writer = new BufferedWriter(file);
+
+        int index = 0;
+        for (LocalDateTime movimiento : movimientos) {
+            if (index > 0) {
+                writer.write("\n");
+            }
+
+            writer.write(movimiento.toString());
+            index++;
+        }
+
+        writer.close();
+    }
+
+
 
     public String toString(){
         return "{" +
