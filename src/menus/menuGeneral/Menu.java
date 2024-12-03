@@ -27,6 +27,7 @@ public class Menu {
         this.cargarClientes(banco);
         this.generarGerente(banco);
         this.generarTarjetasDebito(banco);
+        this.generarTarjetasCredito(banco);
 
 
         int intentosMaximos = 5;
@@ -110,6 +111,14 @@ public class Menu {
     public void generarTarjetasDebito(Banco banco){
         try {
             banco.cargarTarjetasDebito();
+        } catch (IOException e) {
+
+        }
+    }
+
+    public void generarTarjetasCredito(Banco banco){
+        try {
+            banco.cargarTarjetasCredito();
         } catch (IOException e) {
 
         }

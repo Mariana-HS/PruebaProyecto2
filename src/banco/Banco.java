@@ -1,5 +1,6 @@
 package banco;
 
+import tarjetas.TarjetaCredito;
 import tarjetas.TarjetaDebito;
 import usuarios.cliente.Cliente;
 import usuarios.Usuarios;
@@ -15,11 +16,11 @@ import resourses.Utils;
 
 public class Banco {
     Scanner scanner = new Scanner(System.in);
-    Random random = new Random();
     private ArrayList<Usuarios> usuariosRegistrados = new ArrayList<Usuarios>();
     public ArrayList<Cliente> clientes = new ArrayList<>();
     public ArrayList<Empleados> listaEmpleados = new ArrayList<>();
     public ArrayList<TarjetaDebito> listaTarjetasDebito = new ArrayList<>();
+    public ArrayList<TarjetaCredito> listaTarjetasCredito = new ArrayList<>();
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -174,6 +175,102 @@ public class Banco {
 
     //------------------------------------------------------------------------------------------------------
 
+    ///////// METODOS CREDITO /////////////////////
+    public TarjetaCredito crearTarjetaCredito(String idCliente) {
+        String numeroTarjeta = generarNumeroTarjeta();
+        int cvv = cvv();
+        LocalDate fechaRegistro = fechaRegistro();
+        LocalDate fechaVencimiento = fechaVencimiento();
+        while (!validarExistenciaNumeroTarjeta(numeroTarjeta) || !validarExistenciaCVV(cvv)) {
+            numeroTarjeta = generarNumeroTarjeta();
+            cvv = cvv();
+        }
+        TarjetaCredito tarjetaCredito = new TarjetaCredito(0, numeroTarjeta, fechaRegistro, cvv, fechaVencimiento, idCliente);
+        return tarjetaCredito;
+    }
+
+    public void registrarTarjetaCredito(TarjetaCredito tarjetaCredito) {
+        listaTarjetasCredito.add(tarjetaCredito);
+
+        try {
+            guardarTarjetasCredito();
+        } catch (IOException e) {
+            System.out.println("Error al guardar las tarjetas: " + e.getMessage());
+        }
+    }
+
+    public void guardarTarjetasCredito() throws IOException {
+        FileWriter file = new FileWriter("tarjetasCredito.txt");
+        BufferedWriter writer = new BufferedWriter(file);
+
+        int index = 0;
+        for (TarjetaCredito tarjetaCredito : listaTarjetasCredito) {
+            if (index > 0) {
+                writer.write("\n");
+            }
+
+            writer.write(tarjetaCredito.toString());
+            index++;
+        }
+
+        writer.close();
+    }
+
+    public void cargarTarjetasCredito() throws IOException {
+        FileReader file = new FileReader("tarjetasCredito.txt");
+        BufferedReader reader = new BufferedReader(file);
+        String line;
+
+        while ((line = reader.readLine()) != null) {
+            Map<String, Object> data = Utils.convertStringToJsonObject(line);
+
+            TarjetaCredito tarjetaCredito = new TarjetaCredito(
+                    Double.parseDouble(String.valueOf(data.get("saldo"))),
+                    String.valueOf((data.get("numeroTarjeta"))),
+                    LocalDate.parse(String.valueOf(data.get("fechaRegistro"))),
+                    Integer.parseInt(String.valueOf(data.get("cvv"))),
+                    LocalDate.parse(String.valueOf(data.get("fechaVencimiento"))),
+                    String.valueOf(data.get("idCliente"))
+
+            );
+
+            this.listaTarjetasCredito.add(tarjetaCredito);
+
+        }
+
+        reader.close();
+    }
+
+    public void obtenerUltimoMovimientoCredito(TarjetaCredito tarjetaCredito) throws IOException {
+        if (!tarjetaCredito.getMovimientos().isEmpty()) {
+            String ultimoMovimiento = tarjetaCredito.getMovimientos().get(tarjetaCredito.getMovimientos().size() - 1);
+            System.out.println("Último movimiento: " + ultimoMovimiento);
+        } else {
+            System.out.println("No hay movimientos disponibles.");
+        }
+    }
+
+    public void mostrarMovimientosCredito(TarjetaCredito tarjetaCredito) {
+        if (!tarjetaCredito.getMovimientos().isEmpty()) {
+            for (String movimiento : tarjetaCredito.getMovimientos()) {
+                System.out.println(movimiento);
+            }
+        } else {
+            System.out.println("No hay movimientos disponibles.");
+        }
+    }
+
+    public TarjetaCredito buscarTarjetaCredito(String idUsuario) {
+        for (TarjetaCredito tarjeta : listaTarjetasCredito) {
+            if (tarjeta.getIdCliente().equals(idUsuario)) {
+                System.out.println("Tarjeta: " + tarjeta.getNumeroTarjeta());
+                return  tarjeta;
+            }
+        }
+        return null;
+    }
+    /////////---------------------------------------------------------------------------------------
+
     //////// METODOS DE TARJETA DE DEBITO/////////
     public String generarNumeroTarjeta() {
         int primeraMitad = ThreadLocalRandom.current().nextInt(1111, 9999);
@@ -291,16 +388,22 @@ public class Banco {
         reader.close();
     }
 
-    public void historialMovimientosTarjetaDeDebito(TarjetaDebito tarjetaDebito) {
-        LocalDateTime fechaMovimiento = LocalDateTime.now();
-        tarjetaDebito.getMovimientos().add(fechaMovimiento);
-    }
 
 ///ULTIMO MOVIMIENTO DE LA TARJETA DE DEBITO////
     public void obtenerUltimoMovimiento(TarjetaDebito tarjetaDebito) {
         if (!tarjetaDebito.getMovimientos().isEmpty()) {
-            LocalDateTime ultimoMovimiento = tarjetaDebito.getMovimientos().get(tarjetaDebito.getMovimientos().size() - 1);
+            String ultimoMovimiento = tarjetaDebito.getMovimientos().get(tarjetaDebito.getMovimientos().size() - 1);
             System.out.println("Último movimiento: " + ultimoMovimiento);
+        } else {
+            System.out.println("No hay movimientos disponibles.");
+        }
+    }
+
+    public void mostrarMovimientos(TarjetaDebito tarjetaDebito) {
+        if (!tarjetaDebito.getMovimientos().isEmpty()) {
+            for (String movimiento : tarjetaDebito.getMovimientos()) {
+                System.out.println(movimiento);
+            }
         } else {
             System.out.println("No hay movimientos disponibles.");
         }
@@ -705,16 +808,16 @@ public class Banco {
 
         TarjetaDebito tarjetaDebito = buscarTarjetaDebito(numeroTarjeta);
 
+
         while (tarjetaDebito == null) {
             System.out.println("Tarjeta no encontrada");
             System.out.println("Ingrese el numero de tarjeta de debito");
             numeroTarjeta = scanner.nextLine();
             tarjetaDebito = buscarTarjetaDebito(numeroTarjeta);
         }
+        tarjetaDebito.cargarMovimientos();
 
             System.out.println("Saldo actual: $" + tarjetaDebito.getSaldo());
-            System.out.println("Movimientos recientes:");
-            tarjetaDebito.mostrarMovimientos();
 
             System.out.println("\n¿Qué acción desea realizar?");
             System.out.println("1. Realizar un depósito");
@@ -729,17 +832,19 @@ public class Banco {
                     System.out.println("Ingrese el monto a depositar:");
                     double montoDeposito = scanner.nextDouble();
                     tarjetaDebito.depositar(montoDeposito);
-                    registrarMovimiento(tarjetaDebito);
+                    tarjetaDebito.registrarMovimientoDeposito(montoDeposito);
                     System.out.println("Depósito exitoso. Saldo actual: $" + tarjetaDebito.getSaldo());
                     guardarTarjetasDebito();
+
                     return;
                 case 2:
                     System.out.println("Ingrese el monto a retirar:");
                     double montoRetiro = scanner.nextDouble();
                     tarjetaDebito.retirar(montoRetiro);
-                    registrarMovimiento(tarjetaDebito);
+                    tarjetaDebito.registrarMovimientoRetiro(montoRetiro);
                     System.out.println("Retiro realizado. Saldo actual: $" + tarjetaDebito.getSaldo());
                     guardarTarjetasDebito();
+
                     return;
                 case 3:
                     System.out.println("Regresando al menú...");
@@ -749,12 +854,58 @@ public class Banco {
             }
         }
 
+    public void consultarYActualizarEstadoCuentasCredito(Banco banco, Scanner scanner) throws IOException {
+        scanner.nextLine();
+        System.out.println("Ingrese el número de tarjeta de crédito: ");
+        String numeroTarjeta = scanner.nextLine();
 
-    public void registrarMovimiento(TarjetaDebito tarjetaDebito) {
-        tarjetaDebito.getMovimientos().add(java.time.LocalDateTime.now());
+        TarjetaCredito tarjetaCredito = buscarTarjetaCredito(numeroTarjeta);
+
+
+        while (tarjetaCredito == null) {
+            System.out.println("Tarjeta no encontrada");
+            System.out.println("Ingrese el numero de tarjeta de debito");
+            numeroTarjeta = scanner.nextLine();
+            tarjetaCredito = buscarTarjetaCredito(numeroTarjeta);
+        }
+        tarjetaCredito.cargarMovimientos();
+
+        System.out.println("Saldo actual: $" + tarjetaCredito.getSaldo());
+
+        System.out.println("\n¿Qué acción desea realizar?");
+        System.out.println("1. Realizar un depósito");
+        System.out.println("2. Realizar un retiro");
+        System.out.println("3. Regresar al menú");
+
+        int accion = scanner.nextInt();
+        scanner.nextLine();
+
+        switch (accion) {
+            case 1:
+                System.out.println("Ingrese el monto a depositar:");
+                double montoDeposito = scanner.nextDouble();
+                tarjetaCredito.depositar(montoDeposito);
+                tarjetaCredito.registrarMovimientoDeposito(montoDeposito);
+                System.out.println("Depósito exitoso. Saldo actual: $" + tarjetaCredito.getSaldo());
+                guardarTarjetasCredito();
+
+                return;
+            case 2:
+                System.out.println("Ingrese el monto a retirar:");
+                double montoRetiro = scanner.nextDouble();
+                tarjetaCredito.retirar(montoRetiro);
+                tarjetaCredito.registrarMovimientoRetiro(montoRetiro);
+                System.out.println("Retiro realizado. Saldo actual: $" + tarjetaCredito.getSaldo());
+                guardarTarjetasCredito();
+
+                return;
+            case 3:
+                System.out.println("Regresando al menú...");
+                return;
+            default:
+                System.out.println("Opción no válida.");
+        }
     }
-
-
     public void desactivarCuentaCliente(String idCliente) throws IOException {
         Cliente cliente = buscarCliente(idCliente);
         TarjetaDebito tarjetaDebito = buscarTarjetaDebitoParaEliminar(idCliente);

@@ -21,16 +21,6 @@ public class Cliente extends Usuarios {
     public LocalDate getFechaRegistro() { return fechaRegistro; }
     public void setFechaRegistro(LocalDate fechaRegistro) { this.fechaRegistro = fechaRegistro; }
 
-    public TarjetaDebito getTarjetaDebito() { return tarjetaDebito; }
-    public TarjetaCredito getTarjetaCredito() { return tarjetaCredito; }
-
-    public void solicitarTarjetaCredito() { if (tarjetaDebito.getSaldo() >= 30000) {
-        this.tarjetaCredito = new TarjetaCredito(100000); // Límite de crédito
-
-         System.out.println("Tarjeta de crédito asignada a " + getNombre());
-    } else { System.out.println("Saldo insuficiente para solicitar tarjeta de crédito."); } }
-    public boolean puedeSolicitarTarjetaCredito() { return tarjetaDebito.getSaldo() >= 30000; }
-
     public String toString(){
         return "{" +
                 "\"idUsuario\":\"" + this.idUsuario + "\"," +

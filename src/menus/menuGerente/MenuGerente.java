@@ -2,6 +2,7 @@ package menus.menuGerente;
 
 import banco.Banco;
 import menus.menuCliente.MenuCliente;
+import tarjetas.TarjetaCredito;
 import tarjetas.TarjetaDebito;
 import usuarios.cliente.Cliente;
 import usuarios.gerente.Gerente;
@@ -73,7 +74,9 @@ public class MenuGerente {
                     Cliente cliente = new Cliente(id, nombre, apellidos, curpCliente , rfcCliente , direccionCliente , fechaRegistro , contrasenia, usuario);
                     banco.registrarCliente(cliente);
                     TarjetaDebito tarjetaDebito = banco.crearTarjetaDebito(id);
+                    TarjetaCredito tarjetaCredito = banco.crearTarjetaCredito(id);
                     banco.registrarTarjetaDebito(tarjetaDebito);
+                    banco.registrarTarjetaCredito(tarjetaCredito);
                     System.out.println("Su numero de tarjeta es: " + tarjetaDebito.getNumeroTarjeta());
                     System.out.println("El CVV de su tarjeta es: " + tarjetaDebito.getCvv());
 

@@ -1,5 +1,6 @@
 package menus.menuEmpleados;
 
+import tarjetas.TarjetaCredito;
 import tarjetas.TarjetaDebito;
 import usuarios.cliente.Cliente;
 import usuarios.empleados.Empleados;
@@ -23,10 +24,9 @@ public class MenuEmpleados {
             System.out.println("1. Registrar cliente.");
             System.out.println("2. Listar clientes.");
             System.out.println("3. Eliminar cliente.");
-            System.out.println("4. Autorizar solicitud de tarjeta de crédito."); //Falta
-            System.out.println("5. Consultar saldo cliente.");// Falta
-            System.out.println("6. Activación o desactivación de tarjetas:"); //Falta
-            System.out.println("7. Salir");
+            System.out.println("4. Consultar saldo cliente.");
+            System.out.println("5. Activación o desactivación de tarjetas:");
+            System.out.println("6. Salir");
             opcion = scanner.nextInt();
 
             switch (opcion) {
@@ -69,7 +69,9 @@ public class MenuEmpleados {
                     Cliente cliente = new Cliente(id, nombre, apellidos, curpCliente,rfcCliente,direccionCliente,fechaRegistro,usuario,contrasenia);
                     banco.registrarCliente(cliente);
                     TarjetaDebito tarjetaDebito = banco.crearTarjetaDebito(id);
+                    TarjetaCredito tarjetaCredito = banco.crearTarjetaCredito(id);
                     banco.registrarTarjetaDebito(tarjetaDebito);
+                    banco.registrarTarjetaCredito(tarjetaCredito);
                     System.out.println("Su numero de tarjeta es: " + tarjetaDebito.getNumeroTarjeta());
                     System.out.println("El CVV de su tarjeta es: " + tarjetaDebito.getCvv());
 
@@ -88,18 +90,14 @@ public class MenuEmpleados {
                         String idcliente= scanner.nextLine();
                         banco.desactivarCuentaCliente(idcliente);
                         break;
-                        case 4:
-
-                            System.out.println("AUTORIZAR SOLICITUD DE TARJETA DE CREDITO");
-                            break;
-                            case 5:
+                            case 4:
                                 System.out.println("CONSULTAR SALDO DE CLIENTE");
                                 banco.consultarYActualizarEstadoCuentas(banco, scanner);
                                 break;
-                                case 6:
+                                case 5:
                                     System.out.println("ACTIVAR O DESACTIVAR TARJETAS");
                                     break;
-                                    case 7:
+                                    case 6:
                                         return;
             }
 

@@ -1,22 +1,23 @@
 package tarjetas;
+import resourses.Utils;
 
-import usuarios.Usuarios;
-
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 
 
 public class TarjetaDebito {
-    private double saldo;
+    public double saldo;
     public final String numeroTarjeta;
     public LocalDate fechaDeRegistro;
-    private final int cvv;
+    public final int cvv;
     public LocalDate fechaVencimiento;
-    private ArrayList<LocalDateTime> movimientos = new ArrayList<>();
+    public ArrayList<String> movimientos = new ArrayList<>();
     private boolean estado;
     public String idCliente;
 
@@ -68,7 +69,7 @@ public class TarjetaDebito {
         return fechaVencimiento;
     }
 
-    public ArrayList<LocalDateTime> getMovimientos() {
+    public ArrayList<String> getMovimientos() {
         return movimientos;
     }
 
@@ -80,31 +81,61 @@ public class TarjetaDebito {
         }
     }
 
-    public void mostrarMovimientos() {
-        if (movimientos.isEmpty()) {
-            System.out.println("No hay movimientos.");
-        } else {
-            for (LocalDateTime movimiento : movimientos) {
-                System.out.println(movimiento);
+
+    public void guardarMovimientos() throws IOException {
+        Set<String> movimientosExistentes = new HashSet<>();
+        File archivo = new File("movimientos.txt");
+        if (archivo.exists()) {
+            BufferedReader reader = new BufferedReader(new FileReader(archivo));
+            String linea;
+            while ((linea = reader.readLine()) != null) {
+                movimientosExistentes.add(linea);
             }
+            reader.close();
+        }
+
+        // Escribir solo movimientos nuevos
+        BufferedWriter writer = new BufferedWriter(new FileWriter(archivo, true)); // Modo apéndice
+        for (String movimiento : movimientos) {
+            if (!movimientosExistentes.contains(movimiento)) {
+                writer.write(movimiento + "\n");
+            }
+        }
+        writer.close();
+    }
+
+    public void cargarMovimientos() throws IOException {
+        FileReader file = new FileReader("movimientos.txt");
+        BufferedReader reader = new BufferedReader(file);
+        String line;
+
+        while ((line = reader.readLine()) != null) {
+
+            movimientos.add(line);
+        }
+        reader.close();
+    }
+
+    public void registrarMovimientoDeposito(double monto) {
+        String movimiento = "Deposito "+ monto + LocalDateTime.now().toString();
+        movimientos.add(movimiento);
+
+        try {
+            guardarMovimientos();
+        } catch (IOException e) {
+            System.out.println("Error al guardar los movimientos: " + e.getMessage());
         }
     }
 
-    public void guardarMovimientos() throws IOException {
-        FileWriter file = new FileWriter("movimientos.txt");
-        BufferedWriter writer = new BufferedWriter(file);
+    public void registrarMovimientoRetiro(double retiro) {
+        String movimiento = "Retiro "+ retiro + LocalDateTime.now().toString();
+        movimientos.add(movimiento);
 
-        int index = 0;
-        for (LocalDateTime movimiento : movimientos) {
-            if (index > 0) {
-                writer.write("\n");
-            }
-
-            writer.write(movimiento.toString());
-            index++;
+        try {
+            guardarMovimientos();
+        } catch (IOException e) {
+            System.out.println("Error al guardar los movimientos: " + e.getMessage());
         }
-
-        writer.close();
     }
 
 
@@ -119,4 +150,5 @@ public class TarjetaDebito {
                 "\"idCliente\":\"" + this.idCliente + "\"," +
                 "}";
     }
+
 }
